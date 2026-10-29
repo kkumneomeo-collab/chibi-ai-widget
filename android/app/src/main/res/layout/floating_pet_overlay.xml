@@ -44,18 +44,18 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <!-- 2. Scene: Chibi Character Standing on the Fluffy Cloud Pedestal -->
+    <!-- 2. Scene: Chibi Character Standing on the Fluffy Cloud Pedestal (Zero Bars - Pure Fluffy Cloud) -->
     <FrameLayout
         android:id="@+id/characterScene"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clipChildren="false">
 
-        <!-- Cloud Pedestal (Under her shoes) -->
+        <!-- Cloud Pedestal (Pure cloud beneath her feet - Smaller & cute) -->
         <ImageView
             android:id="@+id/ivCloud"
-            android:layout_width="125dp"
-            android:layout_height="60dp"
+            android:layout_width="105dp"
+            android:layout_height="48dp"
             android:layout_gravity="bottom|center_horizontal"
             android:src="@drawable/cloud_pedestal"
             android:scaleType="fitCenter" />
@@ -63,10 +63,10 @@
         <!-- Chibi Character Sprite (Standing atop the cloud) -->
         <ImageView
             android:id="@+id/ivChibi"
-            android:layout_width="100dp"
-            android:layout_height="145dp"
+            android:layout_width="92dp"
+            android:layout_height="132dp"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="10dp"
             android:src="@drawable/chibi_standing"
             android:scaleType="fitCenter" />
 
@@ -83,22 +83,19 @@
             android:textSize="12sp"
             android:elevation="4dp" />
 
-        <!-- Subtle Menu / Chat Toggle Button -->
+        <!-- Discreet Floating Chat / Menu Button (Floating at top-start, completely off the cloud) -->
         <TextView
             android:id="@+id/btnToggleMenu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="4dp"
-            android:background="@drawable/menu_pill_bg"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp"
-            android:text="Chibi ☰"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="top|start"
+            android:background="@drawable/send_btn_bg"
+            android:backgroundTint="#FFFFFF"
+            android:gravity="center"
+            android:text="💬"
             android:textColor="#334155"
-            android:textSize="11sp"
-            android:textStyle="bold" />
+            android:textSize="13sp"
+            android:elevation="5dp" />
     </FrameLayout>
 
     <!-- 3. Expandable Floating Chat & Action Panel (Zero-Keyboard Chips + Custom Input) -->

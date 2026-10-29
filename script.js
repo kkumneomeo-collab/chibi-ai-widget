@@ -70,6 +70,7 @@ const elements = {
   chatForm: document.getElementById('chatForm'),
   chatInput: document.getElementById('chatInput'),
   sendBtn: document.getElementById('sendBtn'),
+  miniChatThinking: document.getElementById('miniChatThinking'),
   miniChips: document.querySelectorAll('.mini-chip'),
   // Full Chat Drawer
   fullChatDrawer: document.getElementById('fullChatDrawer'),
@@ -587,10 +588,10 @@ Include cute touches like (◕‿◕), ☁️, or ✨.`
 async function handleChat(prompt) {
   wakeUp();
 
-  // Show thinking in floating bubble if full chat is closed
-  if (!state.isFullChatOpen) {
-    closeMenu();
-    showBubbleThinking();
+  // Show thinking in both speech bubble and mini-menu
+  showBubbleThinking();
+  if (elements.miniChatThinking) {
+    elements.miniChatThinking.classList.add('show');
   }
 
   // Show thinking emoji in expression badge
@@ -618,8 +619,11 @@ async function handleChat(prompt) {
   // Fetch AI answer
   const reply = await fetchFreeAI(prompt);
 
-  // Hide thinking row in full chat drawer
+  // Hide thinking indicators
   hideFullChatThinking();
+  if (elements.miniChatThinking) {
+    elements.miniChatThinking.classList.remove('show');
+  }
 
   // Reset send buttons
   if (elements.sendBtn) {
@@ -683,6 +687,7 @@ function handlePoke() {
 // ==========================================
 // 10. DRAGGABLE WIDGET ON WEB
 // ==========================================
+let hasDragged = false;
 function initDraggable() {
   let isPotentialDrag = false;
   let isDragging = false;
@@ -691,7 +696,7 @@ function initDraggable() {
 
   elements.cloudWidget.addEventListener('pointerdown', (e) => {
     // Ignore interactive menu/buttons
-    if (e.target.closest('#menuBtn, #popoverMenu, #resizeHandle, #fullChatDrawer, .cloud-dock-strip')) return;
+    if (e.target.closest('#menuBtn, #popoverMenu, #resizeHandle, #fullChatDrawer')) return;
     if (e.button !== 0) return;
 
     isPotentialDrag = true;
@@ -713,6 +718,7 @@ function initDraggable() {
     if (!isDragging) {
       if (Math.hypot(dx, dy) > DRAG_THRESHOLD) {
         isDragging = true;
+        hasDragged = true;
         elements.cloudWidget.style.position = 'fixed';
         elements.cloudWidget.style.left = `${initialLeft}px`;
         elements.cloudWidget.style.top = `${initialTop}px`;
@@ -731,10 +737,11 @@ function initDraggable() {
     if (!isPotentialDrag) return;
 
     if (!isDragging) {
-      // Clean click on Chibi character or cloud pedestal -> react immediately!
+      // Clean tap/click on Chibi character or cloud pedestal
       handlePoke();
     } else {
       try { elements.cloudWidget.releasePointerCapture(e.pointerId); } catch (_) {}
+      setTimeout(() => { hasDragged = false; }, 120);
     }
 
     isPotentialDrag = false;
@@ -771,9 +778,10 @@ function init() {
   // Global Keypress -> Bongo Tap on Cloud!
   window.addEventListener('keydown', handleKeyPress);
 
-  // Click Cloud / Chibi -> Poke (Only if not clicking on dock or menu button)
+  // Click Cloud / Chibi -> Poke (Only if not clicking on menu or resize handle)
   elements.characterStage.addEventListener('click', (e) => {
-    if (e.target.closest('#menuBtn, #popoverMenu, #resizeHandle, #fullChatDrawer, .cloud-dock-strip')) {
+    if (hasDragged) return;
+    if (e.target.closest('#menuBtn, #popoverMenu, #resizeHandle, #fullChatDrawer')) {
       return;
     }
     handlePoke();

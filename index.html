@@ -28,26 +28,23 @@
     <!-- Particles Layer (Music notes & sparkles) -->
     <div class="particles-layer" id="particlesContainer"></div>
 
-    <!-- The Entire Scene: Chibi Standing on the Cloud -->
+    <!-- The Entire Scene: Chibi Standing on the Cloud (Zero Bars - Pure Fluffy Cloud) -->
     <div class="standing-scene" id="characterStage" title="Click to poke! Scroll wheel to resize!">
       
+      <!-- Discreet Floating Menu Trigger (Positioned neatly off the cloud) -->
+      <button class="floating-menu-trigger" id="menuBtn" title="Options & Chat" aria-label="Menu" type="button">
+        <span>☰</span>
+      </button>
+
       <!-- Chibi Character (Full Body Standing) -->
       <div class="chibi-character-wrap" id="chibiInner">
-        <img id="chibiImg" src="assets/chibi-transparent.png" alt="Chibi Character" class="chibi-standing-img" />
+        <img id="chibiImg" src="assets/chibi-transparent.png" alt="Chibi Character" class="chibi-standing-img" draggable="false" />
         <div class="expression-badge" id="expressionBadge">✨</div>
       </div>
 
-      <!-- The Real Fluffy Cloud (Pedestal beneath Chibi's feet) -->
+      <!-- The Real Fluffy Cloud Pedestal (Pure cloud, no bar, Chibi stands right on it) -->
       <div class="cloud-pedestal-wrap" id="cloudPedestal">
-        <img src="assets/cloud-transparent.png" alt="Fluffy Cloud" class="cloud-img" />
-        
-        <!-- Bongo Cat-style Dock Pill nestled into the cloud -->
-        <div class="cloud-dock-strip" id="cloudDock">
-          <div class="cloud-dock-label" id="dockLabel" title="Click to poke!">Chibi</div>
-          <button class="cloud-menu-trigger" id="menuBtn" title="Options & Chat" aria-label="Menu" type="button">
-            <span>☰</span>
-          </button>
-        </div>
+        <img src="assets/cloud-transparent.png" alt="Fluffy Cloud" class="cloud-img" draggable="false" />
 
         <!-- Corner Resize Handle (Only visible on hover) -->
         <div class="resize-handle" id="resizeHandle" title="Drag with mouse to resize">
@@ -101,6 +98,14 @@
 
       <!-- Quick Ask Input in Popover -->
       <div class="menu-chat-section">
+        <!-- Live Thinking Indicator Inside Menu -->
+        <div class="mini-chat-thinking" id="miniChatThinking">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span>Chibi is thinking... 💭</span>
+        </div>
+
         <form class="mini-chat-form" id="chatForm">
           <input 
             type="text" 

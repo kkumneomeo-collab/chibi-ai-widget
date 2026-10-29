@@ -25,6 +25,16 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 body {
   font-family: var(--font-main);
   background: radial-gradient(circle at center, #f0fdf4 0%, #e0f2fe 50%, #fdf2f8 100%);
@@ -190,8 +200,45 @@ body.mode-desktop .full-chat-drawer {
   -webkit-app-region: no-drag;
 }
 
+/* Discreet Floating Menu Trigger (Positioned neatly off the cloud) */
+.floating-menu-trigger {
+  position: absolute;
+  top: 8px;
+  right: -4px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1.5px solid #cbd5e1;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: #475569;
+  cursor: pointer;
+  z-index: 35;
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  pointer-events: auto !important;
+  -webkit-app-region: no-drag;
+}
+
+.floating-menu-trigger:hover {
+  background: #f0fdf4;
+  border-color: #93c5fd;
+  color: #0284c7;
+  transform: scale(1.12);
+}
+
+.floating-menu-trigger.active {
+  background: #e0f2fe;
+  border-color: #38bdf8;
+  color: #0369a1;
+  transform: rotate(90deg) scale(1.05);
+}
+
 .chibi-standing-img {
-  height: calc(180px * var(--scale));
+  height: calc(165px * var(--scale));
   width: auto;
   object-fit: contain;
   display: block;
@@ -199,6 +246,8 @@ body.mode-desktop .full-chat-drawer {
   cursor: pointer;
   pointer-events: auto;
   -webkit-app-region: no-drag;
+  -webkit-user-drag: none;
+  user-select: none;
   transition: transform 0.15s ease;
 }
 
@@ -231,25 +280,27 @@ body.mode-desktop .full-chat-drawer {
   transform: scale(1);
 }
 
-/* Cloud Pedestal Beneath Chibi's Feet (Neat & Compact Cloud) */
+/* Pure Cloud Pedestal Beneath Chibi's Feet (Compact, Cute, Zero Bars) */
 .cloud-pedestal-wrap {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: calc(-20px * var(--scale)); /* Sinks her shoes gently into the cloud */
-  z-index: 12;
+  margin-top: calc(-14px * var(--scale)); /* Sinks her shoes gently right onto the cloud */
+  z-index: 5;
   cursor: pointer;
   -webkit-app-region: no-drag;
 }
 
 .cloud-img {
-  width: calc(135px * var(--scale)); /* Smaller, cute compact cloud pedestal */
+  width: calc(115px * var(--scale)); /* Smaller, cute compact cloud pedestal */
   height: auto;
   display: block;
-  filter: drop-shadow(0 8px 14px rgba(147, 197, 253, 0.5));
+  filter: drop-shadow(0 6px 14px rgba(147, 197, 253, 0.45));
   cursor: pointer;
   pointer-events: auto;
+  -webkit-user-drag: none;
+  user-select: none;
   -webkit-app-region: no-drag;
 }
 
@@ -627,6 +678,24 @@ body.mode-desktop .full-chat-drawer {
   gap: 6px;
   border-top: 1px solid #f1f5f9;
   padding-top: 8px;
+}
+
+.mini-chat-thinking {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 5px 8px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #166534;
+  margin-bottom: 6px;
+}
+
+.mini-chat-thinking.show {
+  display: flex;
 }
 
 .mini-chat-form {
