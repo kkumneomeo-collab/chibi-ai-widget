@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#0284C7</color>
+    <color name="primary_dark">#0369A1</color>
+    <color name="accent">#F472B6</color>
+    <color name="text_dark">#1E293B</color>
+    <color name="cloud_border">#94A3B8</color>
+    <color name="chip_bg">#F1F5F9</color>
+    <color name="white">#FFFFFF</color>
+</resources>
