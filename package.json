@@ -1,0 +1,25 @@
+{
+  "name": "chibi-desktop-companion",
+  "version": "1.0.0",
+  "description": "100% Free Floating Desktop Chibi AI Companion",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack:mac": "electron-packager . ChibiCompanion --platform=darwin --arch=arm64 --out=dist",
+    "pack:win": "electron-packager . ChibiCompanion --platform=win32 --arch=x64 --out=dist"
+  },
+  "keywords": [
+    "chibi",
+    "desktop-pet",
+    "ai-companion",
+    "electron",
+    "transparent-window",
+    "free-ai"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0"
+  }
+}
+

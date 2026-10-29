@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chibi on Cloud</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☁️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="mode-widget is-minimized">
+
+  <!-- Main Floating Widget (Draggable & Mouse Resizable) -->
+  <div class="cloud-widget" id="cloudWidget">
+
+    <!-- Speech / AI Reaction Bubble (Above Chibi's Head) -->
+    <div class="floating-bubble" id="floatingBubble">
+      <span id="bubbleText">I'm floating on my cloud! Ask me anything or type to bongo! ☁️✨</span>
+    </div>
+
+    <!-- Sleep ZZZ indicator (when idle) -->
+    <div class="sleep-indicator" id="sleepIndicator">
+      <span>z</span><span>z</span><span>z</span>
+    </div>
+
+    <!-- Particles Layer (Music notes & sparkles) -->
+    <div class="particles-layer" id="particlesContainer"></div>
+
+    <!-- The Entire Scene: Chibi Standing on the Cloud -->
+    <div class="standing-scene" id="characterStage" title="Click to poke! Scroll wheel to resize!">
+      
+      <!-- Chibi Character (Full Body Standing) -->
+      <div class="chibi-character-wrap" id="chibiInner">
+        <img id="chibiImg" src="assets/chibi-transparent.png" alt="Chibi Character" class="chibi-standing-img" />
+        <div class="expression-badge" id="expressionBadge">✨</div>
+      </div>
+
+      <!-- The Real Fluffy Cloud (Pedestal beneath Chibi's feet) -->
+      <div class="cloud-pedestal-wrap" id="cloudPedestal">
+        <img src="assets/cloud-transparent.png" alt="Fluffy Cloud" class="cloud-img" />
+        
+        <!-- Bongo Cat-style Dock Pill nestled into the cloud -->
+        <div class="cloud-dock-strip" id="cloudDock">
+          <div class="cloud-dock-label" id="dockLabel" title="Click to poke!">Chibi</div>
+          <button class="cloud-menu-trigger" id="menuBtn" title="Options & Chat" aria-label="Menu" type="button">
+            <span>☰</span>
+          </button>
+        </div>
+
+        <!-- Corner Resize Handle (Only visible on hover) -->
+        <div class="resize-handle" id="resizeHandle" title="Drag with mouse to resize">
+          <span>⤡</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Popover Menu / Options (Opens when ☰ is clicked) -->
+    <div class="popover-menu" id="popoverMenu">
+      <div class="popover-header">
+        <span class="popover-title">☁️ Chibi on Cloud</span>
+        <button class="close-popover" id="closeMenuBtn" type="button">✕</button>
+      </div>
+
+      <!-- Mouse Controlled Size Slider -->
+      <div class="menu-row slider-row">
+        <span class="row-label">Size:</span>
+        <input type="range" id="sizeSlider" min="0.5" max="2.2" step="0.05" value="1.0" class="mini-slider" />
+        <span class="scale-label" id="scaleLabel">1.0x</span>
+      </div>
+
+      <!-- Keystroke Counter Toggle (Checkbox Tick - unchecked by default) -->
+      <div class="menu-row checkbox-row">
+        <label class="checkbox-label" for="counterToggle">
+          <input type="checkbox" id="counterToggle" />
+          <span class="custom-checkbox"></span>
+          <span class="checkbox-text">Show Keystroke Counter</span>
+        </label>
+      </div>
+
+      <!-- Name Edit Row -->
+      <div class="menu-row name-row">
+        <span class="row-label">Name:</span>
+        <input type="text" id="nameInput" value="Chibi" maxlength="15" class="mini-name-input" placeholder="Companion name" />
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="menu-row buttons-row">
+        <button class="action-btn" id="soundToggleBtn">
+          <span id="soundIcon">🔔</span> Sound
+        </button>
+        <button class="action-btn" id="viewFullChatBtn" title="View complete chat history">
+          💬 Full Chat
+        </button>
+        <button class="action-btn" id="resetCountBtn" style="display: none;">
+          🔄 Reset
+        </button>
+      </div>
+
+      <!-- Quick Ask Input in Popover -->
+      <div class="menu-chat-section">
+        <form class="mini-chat-form" id="chatForm">
+          <input 
+            type="text" 
+            id="chatInput" 
+            placeholder="Ask Chibi anything..." 
+            autocomplete="off" 
+            maxlength="200" 
+          />
+          <button type="submit" class="mini-send-btn" id="sendBtn">🚀</button>
+        </form>
+
+        <!-- Quick AI Prompt Chips -->
+        <div class="mini-chips">
+          <button type="button" class="mini-chip" data-q="Tell me a joke! 😆">😆 Joke</button>
+          <button type="button" class="mini-chip" data-q="Inspire me! 💖">💖 Inspire</button>
+          <button type="button" class="mini-chip" data-q="Who are you? ☁️">☁️ Who are you?</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expandable Full Chat Drawer (User can view all past chats & chat more!) -->
+    <div class="full-chat-drawer" id="fullChatDrawer">
+      <div class="full-chat-header">
+        <div class="header-left">
+          <span class="full-chat-title">☁️ Conversation History</span>
+          <span class="chat-badge" id="chatBadge">1 msg</span>
+        </div>
+        <div class="header-right">
+          <button class="chat-icon-btn" id="clearFullChatBtn" title="Clear Chat History">🗑️</button>
+          <button class="chat-icon-btn close-chat-btn" id="closeFullChatBtn" title="Minimize Chat">✕</button>
+        </div>
+      </div>
+
+      <!-- Scrollable Message List (View Chat More) -->
+      <div class="full-messages-list" id="fullMessagesList">
+        <div class="msg-row chibi-msg">
+          <div class="avatar-dot"><img src="assets/chibi-transparent.png" alt="Chibi" /></div>
+          <div class="msg-bubble">
+            <span class="msg-sender">Chibi</span>
+            <div class="msg-content">Hello friend! 🐾 I'm floating on my cloud with zero limits and no keys needed! Ask me anything! ✨</div>
+            <span class="msg-time">Just now</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Chips in Full Chat -->
+      <div class="full-chat-chips" id="fullChatChips">
+        <button type="button" class="f-chip" data-q="Tell me a fun random fact! 🌟">🌟 Fact</button>
+        <button type="button" class="f-chip" data-q="Tell me a clever riddle! 🧩">🧩 Riddle</button>
+        <button type="button" class="f-chip" data-q="What is the speed of light? ⚡">⚡ Speed of light</button>
+        <button type="button" class="f-chip" data-q="What is 15 + 27? 🔢">🔢 Math</button>
+      </div>
+
+      <!-- Chat Input Form in Full Chat -->
+      <form class="full-chat-input-bar" id="fullChatForm">
+        <input 
+          type="text" 
+          id="fullChatInput" 
+          placeholder="Ask Chibi anything..." 
+          autocomplete="off" 
+          maxlength="500" 
+        />
+        <button type="submit" class="full-send-btn" id="fullSendBtn" aria-label="Send">🚀</button>
+      </form>
+    </div>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
