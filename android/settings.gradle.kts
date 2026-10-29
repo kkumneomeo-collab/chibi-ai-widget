@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "chibi-mobile-widget"
 include(":app")
+

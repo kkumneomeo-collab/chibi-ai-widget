@@ -16,6 +16,13 @@ out/
 ehthumbs.db
 Thumbs.db
 
+# Android
+.gradle/
+android/.gradle/
+android/local.properties
+android/**/build/
+*.apk
+
 # Logs
 logs/
 *.log

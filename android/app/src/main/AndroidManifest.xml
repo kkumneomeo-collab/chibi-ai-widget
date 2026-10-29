@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/chibi_standing"
@@ -9,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChibiWidget">
 
-        <!-- Main Preview Activity -->
+        <!-- Main Launcher & Overlay Setup Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -19,7 +25,18 @@
             </intent-filter>
         </activity>
 
-        <!-- Glance Widget Receiver -->
+        <!-- Floating Screen Pet Overlay Foreground Service -->
+        <service
+            android:name=".FloatingPetService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Floating desktop pet companion overlay" />
+        </service>
+
+        <!-- Glance Home Screen Widget Receiver -->
         <receiver
             android:name=".ChibiWidgetReceiver"
             android:exported="true">

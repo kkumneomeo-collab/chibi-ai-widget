@@ -46,3 +46,4 @@ class ChibiActionCallback : ActionCallback {
         ChibiGlanceWidget().update(context, glanceId)
     }
 }
+

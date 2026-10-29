@@ -6,3 +6,4 @@ import androidx.glance.appwidget.GlanceAppWidgetReceiver
 class ChibiWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget = ChibiGlanceWidget()
 }
+
