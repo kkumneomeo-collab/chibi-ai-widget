@@ -1,0 +1,16 @@
+/* Nooki window layout (added 2026-11-26).
+   Keeps the page a comfortable fixed width on big / maximized windows, like normal Mac apps:
+   the window grows, but buttons, cards and water glasses stay the same size. */
+.desktop-content > .app-screen-view {
+  width: 100%;
+  max-width: 1080px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Native Mac window: macOS draws the real red / yellow / green buttons,
+   so the drawn ones are hidden but keep their space. */
+body.native-titlebar .titlebar-traffic-lights {
+  visibility: hidden;
+  pointer-events: none;
+}

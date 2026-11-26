@@ -1,0 +1,10 @@
+node_modules/
+.nooki_transfers/
+dist/
+out/
+src-tauri/target/
+.DS_Store
+**/.DS_Store
+*.env
+.env*
+.env

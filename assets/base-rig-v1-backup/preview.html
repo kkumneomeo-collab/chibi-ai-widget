@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nooki Live Rigging & Animation Preview</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(circle at 50% 30%, #ede9fe 0%, #c4b5fd 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .preview-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      border-radius: 32px;
+      box-shadow: 0 20px 60px rgba(109, 40, 217, 0.2);
+      padding: 24px 32px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 480px;
+      width: 90vw;
+    }
+
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #4c1d95;
+      margin-bottom: 4px;
+    }
+
+    p.subtitle {
+      font-size: 0.82rem;
+      color: #6d28d9;
+      margin-bottom: 20px;
+    }
+
+    /* Character Rig Stage */
+    .rig-stage {
+      position: relative;
+      width: 280px;
+      height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .chibi-rig {
+      position: relative;
+      width: 190px;
+      height: calc(190px * (1693 / 637)); /* Matches 637x1693 aspect ratio */
+      transform-origin: 50% 95%;
+      animation: idleBreathe 3.6s ease-in-out infinite;
+      transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .chibi-rig.poked {
+      animation: pokeBounce 0.45s ease-out;
+    }
+
+    .rig-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      transition: transform 0.08s ease-out;
+    }
+
+    /* Anatomical Layer Stacking Order */
+    .layer-body         { z-index: 10; }
+    .layer-head         { z-index: 20; transform-origin: 50% 48%; }
+    .layer-eyerish      { z-index: 30; }
+    .layer-eyes         { z-index: 35; transform-origin: 50% 48%; transition: opacity 0.05s ease; }
+    .layer-eyes-closed  { z-index: 36; transform-origin: 50% 48%; opacity: 0; pointer-events: none; transition: opacity 0.05s ease; }
+    .layer-eyebrows     { z-index: 40; transform-origin: 50% 48%; }
+    .layer-mouth        { z-index: 45; transform-origin: 50% 48%; }
+    .layer-hand-l       { z-index: 50; transform-origin: 30% 65%; }
+    .layer-hand-r       { z-index: 50; transform-origin: 70% 65%; }
+
+    /* Blinking Animation with Custom Closed Eyelids */
+    .chibi-rig.blink .layer-eyes {
+      opacity: 0 !important;
+    }
+    .chibi-rig.blink .layer-eyerish {
+      opacity: 0 !important;
+    }
+    .chibi-rig.blink .layer-eyes-closed {
+      opacity: 1 !important;
+    }
+
+    /* Talking Animation */
+    .chibi-rig.talking .layer-mouth {
+      animation: mouthTalk 0.28s infinite alternate ease-in-out;
+    }
+
+    /* Bongo Hand Tapping */
+    .layer-hand-l.tap {
+      transform: translateY(12px) rotate(-8deg);
+    }
+    .layer-hand-r.tap {
+      transform: translateY(12px) rotate(8deg);
+    }
+
+    /* Cloud Base */
+    .cloud-pedestal {
+      position: absolute;
+      bottom: -15px;
+      width: 220px;
+      height: auto;
+      z-index: 5;
+      filter: drop-shadow(0 10px 16px rgba(109, 40, 217, 0.18));
+      pointer-events: none;
+    }
+
+    /* Controls Bar */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 18px;
+      width: 100%;
+    }
+
+    button {
+      background: #7c3aed;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 8px 14px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
+      transition: all 0.15s ease;
+    }
+
+    button:hover { background: #6d28d9; transform: translateY(-1px); }
+    button:active { transform: scale(0.96); }
+    button.active { background: #10b981; }
+
+    /* Keyframes */
+    @keyframes idleBreathe {
+      0%, 100% { transform: translateY(0) scale(1, 1); }
+      50% { transform: translateY(-4px) scale(0.99, 1.015); }
+    }
+
+    @keyframes pokeBounce {
+      0% { transform: scale(1, 1); }
+      30% { transform: translateY(12px) scale(1.12, 0.88); }
+      60% { transform: translateY(-18px) scale(0.92, 1.1); }
+      85% { transform: translateY(3px) scale(1.03, 0.97); }
+      100% { transform: translateY(0) scale(1, 1); }
+    }
+
+    @keyframes mouthTalk {
+      0% { transform: scale(1, 1); }
+      100% { transform: scale(1.3, 1.45) translateY(2px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="preview-card">
+    <h1>Nooki Live Rigging Preview ✨</h1>
+    <p class="subtitle">Move mouse to track eyes • Click/tap Chibi to poke • Press any key to bongo</p>
+
+    <div class="rig-stage" id="rigStage">
+      <!-- Fluffy Cloud Pedestal -->
+      <img src="../cloud-transparent.png" class="cloud-pedestal" alt="Cloud" />
+
+      <!-- Layered 2D Chibi Rig -->
+      <div class="chibi-rig" id="chibiRig">
+        <img src="body.png" class="rig-layer layer-body" alt="Body" />
+        <img src="head.png" class="rig-layer layer-head" id="rigHead" alt="Head" />
+        <img src="eyes.png" class="rig-layer layer-eyes" id="rigEyes" alt="Eyes" />
+        <img src="eyes_closed.png" class="rig-layer layer-eyes-closed" id="rigEyesClosed" alt="Eyes Closed" />
+        <img src="eyerish.png" class="rig-layer layer-eyerish" id="rigIris" alt="Irises" />
+        <img src="eyesbrows.png" class="rig-layer layer-eyebrows" id="rigBrows" alt="Eyebrows" />
+        <img src="mouth.png" class="rig-layer layer-mouth" id="rigMouth" alt="Mouth" />
+        <img src="hand_left.png" class="rig-layer layer-hand-l" id="handLeft" alt="Left Hand" />
+        <img src="hand_right.png" class="rig-layer layer-hand-r" id="handRight" alt="Right Hand" />
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="btnBlink">👀 Blink</button>
+      <button id="btnTalk">🗣️ Toggle Talk</button>
+      <button id="btnBongo">🎹 Bongo Tap</button>
+      <button id="btnPoke">✨ Poke</button>
+    </div>
+  </div>
+
+  <script>
+    const chibiRig = document.getElementById('chibiRig');
+    const rigStage = document.getElementById('rigStage');
+    const rigIris = document.getElementById('rigIris');
+    const rigHead = document.getElementById('rigHead');
+    const handLeft = document.getElementById('handLeft');
+    const handRight = document.getElementById('handRight');
+
+    // 1. Natural Blinking Loop
+    function triggerBlink() {
+      chibiRig.classList.add('blink');
+      setTimeout(() => chibiRig.classList.remove('blink'), 140);
+      scheduleNextBlink();
+    }
+    function scheduleNextBlink() {
+      const delay = Math.random() * 3200 + 2000;
+      setTimeout(triggerBlink, delay);
+    }
+    scheduleNextBlink();
+    document.getElementById('btnBlink').addEventListener('click', triggerBlink);
+
+    // 2. Eye Tracking (Irises follow cursor)
+    window.addEventListener('mousemove', (e) => {
+      const rect = rigStage.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height * 0.38; // eye level
+      
+      const dx = (e.clientX - centerX) / (window.innerWidth / 2);
+      const dy = (e.clientY - centerY) / (window.innerHeight / 2);
+
+      // Clamp max iris shift to 5px horizontal, 3px vertical
+      const shiftX = Math.max(-5.5, Math.min(5.5, dx * 6));
+      const shiftY = Math.max(-3.5, Math.min(3.5, dy * 4));
+      rigIris.style.transform = `translate(${shiftX}px, ${shiftY}px)`;
+
+      // Subtle head tilt toward cursor
+      const tiltX = Math.max(-2, Math.min(2, dx * 2.5));
+      const tiltRot = Math.max(-3, Math.min(3, dx * 3.5));
+      rigHead.style.transform = `translate(${tiltX}px, 0) rotate(${tiltRot}deg)`;
+    });
+
+    // 3. Poke Bounce
+    function triggerPoke() {
+      chibiRig.classList.remove('poked');
+      void chibiRig.offsetWidth; // re-flow
+      chibiRig.classList.add('poked');
+      setTimeout(() => chibiRig.classList.remove('poked'), 500);
+    }
+    rigStage.addEventListener('click', triggerPoke);
+    document.getElementById('btnPoke').addEventListener('click', triggerPoke);
+
+    // 4. Talking Toggle
+    let isTalking = false;
+    document.getElementById('btnTalk').addEventListener('click', () => {
+      isTalking = !isTalking;
+      chibiRig.classList.toggle('talking', isTalking);
+      document.getElementById('btnTalk').classList.toggle('active', isTalking);
+    });
+
+    // 5. Alternating Bongo Keyboard Tapping
+    let lastPaw = 'right';
+    function bongoTap() {
+      if (lastPaw === 'right') {
+        handLeft.classList.add('tap');
+        setTimeout(() => handLeft.classList.remove('tap'), 120);
+        lastPaw = 'left';
+      } else {
+        handRight.classList.add('tap');
+        setTimeout(() => handRight.classList.remove('tap'), 120);
+        lastPaw = 'right';
+      }
+    }
+    document.getElementById('btnBongo').addEventListener('click', bongoTap);
+    window.addEventListener('keydown', (e) => {
+      if (!e.repeat) bongoTap();
+    });
+  </script>
+</body>
+</html>

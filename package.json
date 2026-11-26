@@ -1,0 +1,32 @@
+{
+  "name": "nooki-desktop",
+  "version": "1.0.0",
+  "description": "Nooki Desktop Companion - Floating Screen Pet & Cloud Keystroke Counter",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "serve": "node server.js",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
+    "pack:mac": "electron-packager . NookiDesktop --platform=darwin --arch=arm64 --out=dist",
+    "pack:win": "electron-packager . NookiDesktop --platform=win32 --arch=x64 --out=dist"
+  },
+  "keywords": [
+    "nooki",
+    "chibi",
+    "desktop-pet",
+    "ai-companion",
+    "tauri",
+    "electron",
+    "transparent-window",
+    "keystroke-counter"
+  ],
+  "author": "Nooki Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0",
+    "electron": "^33.0.0"
+  }
+}
+

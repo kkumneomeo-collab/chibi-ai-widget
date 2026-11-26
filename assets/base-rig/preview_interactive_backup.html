@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Nooki Live 2D Rigging Studio (Chibi Boy)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --primary: #7c3aed;
+      --primary-dark: #6d28d9;
+      --primary-light: #ede9fe;
+      --accent: #ec4899;
+      --surface: rgba(255, 255, 255, 0.94);
+      --border: rgba(255, 255, 255, 0.95);
+      --text-dark: #2e1065;
+      --text-muted: #6b21a8;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 25%, #f5f3ff 0%, #ddd6fe 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-x: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .studio-card {
+      background: var(--surface);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 2px solid var(--border);
+      border-radius: 36px;
+      box-shadow: 0 24px 70px rgba(109, 40, 217, 0.22);
+      padding: 24px 30px 28px;
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 28px;
+      max-width: 960px;
+      width: 96vw;
+      align-items: center;
+    }
+
+    @media (max-width: 860px) {
+      .studio-card {
+        grid-template-columns: 1fr;
+        padding: 20px;
+        gap: 18px;
+      }
+    }
+
+    /* Left Stage Column */
+    .stage-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .stage-header {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.02em;
+    }
+
+    p.subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Speech Bubble */
+    .speech-bubble {
+      background: white;
+      color: #581c87;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: 18px;
+      box-shadow: 0 6px 18px rgba(124, 58, 237, 0.15);
+      border: 1.5px solid #ede9fe;
+      margin-bottom: 12px;
+      min-height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+      max-width: 320px;
+    }
+
+    .speech-bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px 6px 0;
+      border-style: solid;
+      border-color: white transparent;
+      display: block;
+      width: 0;
+    }
+
+    /* Character Rig Stage */
+    .rig-stage {
+      position: relative;
+      width: 300px;
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .rig-stage:active {
+      cursor: grabbing;
+    }
+
+    /* Soft Contact Ground Shadow */
+    .ground-shadow {
+      position: absolute;
+      bottom: 14px;
+      width: 150px;
+      height: 18px;
+      background: radial-gradient(ellipse at center, rgba(76, 29, 149, 0.3) 0%, rgba(76, 29, 149, 0) 72%);
+      border-radius: 50%;
+      z-index: 2;
+      pointer-events: none;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    /* Layered 2D Chibi Rig Container */
+    .chibi-rig {
+      position: relative;
+      height: 350px;
+      width: calc(350px * 1426 / 2318);
+      aspect-ratio: 1426 / 2318;
+      transform-origin: 50% 95%;
+      transition: transform 0.08s ease-out;
+      filter: drop-shadow(0 8px 18px rgba(109, 40, 217, 0.14));
+    }
+
+    /* Rig Assemblies */
+    .rig-group {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* Body Assembly: Pivot at hips/pelvis */
+    .rig-group-body {
+      z-index: 10;
+      transform-origin: 50% 75%;
+      transition: transform 0.08s ease-out;
+    }
+
+    /* Head Assembly: Anatomically locked at neck socket */
+    .rig-group-head {
+      z-index: 20;
+      transform-origin: 48.5% 36.5%; /* Anatomical cervical spine joint */
+      transition: transform 0.06s ease-out;
+    }
+
+    /* Hair Container: Locked to forehead skull with secondary spring inertia */
+    .rig-hair-wrap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 30;
+      transform-origin: 48.5% 18%; /* Crown anchor */
+      transition: transform 0.05s ease-out;
+    }
+
+    /* Iris Wrap: Strictly BEHIND head layer in eye sockets */
+    .rig-iris-wrap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 5;
+    }
+
+    /* Layer Images */
+    .rig-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      -webkit-user-drag: none;
+    }
+
+    /* Anatomical Stacking Order */
+    .layer-eyerish      { z-index: 5; transition: transform 0.04s ease-out; }
+    .layer-body         { z-index: 10; } /* Has seamless neck underlay up to y=750! */
+    .layer-short        { z-index: 12; }
+    .layer-jacket       { z-index: 15; }
+    .layer-head         { z-index: 20; }
+    .layer-eyes-closed  { z-index: 25; opacity: 0; pointer-events: none; transition: opacity 0.06s ease; }
+    .layer-hair         { z-index: 30; }
+
+    /* Blinking & Winking */
+    .chibi-rig.blink .layer-eyerish { opacity: 0 !important; }
+    .chibi-rig.blink .layer-eyes-closed { opacity: 1 !important; }
+
+    .chibi-rig.wink-left .layer-eyes-closed {
+      opacity: 1 !important;
+      clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%) !important;
+    }
+    .chibi-rig.wink-right .layer-eyes-closed {
+      opacity: 1 !important;
+      clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%) !important;
+    }
+
+    /* Cute Anime Blush Glow */
+    .blush-layer {
+      position: absolute;
+      top: 31%;
+      left: 36%;
+      width: 27%;
+      height: 3.5%;
+      display: flex;
+      justify-content: space-between;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      z-index: 22;
+      pointer-events: none;
+    }
+
+    .blush-dot {
+      width: 28px;
+      height: 14px;
+      background: radial-gradient(ellipse at center, rgba(244, 63, 94, 0.75) 0%, rgba(244, 63, 94, 0) 75%);
+      border-radius: 50%;
+      filter: blur(1.5px);
+    }
+
+    .chibi-rig.happy .blush-layer,
+    .chibi-rig.poked .blush-layer,
+    .chibi-rig.blushing .blush-layer {
+      opacity: 1;
+    }
+
+    /* Animated Arms & Hands Layers */
+    .arm-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 18;
+    }
+
+    .paw-left, .paw-right {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 0;
+      transition: transform 0.08s ease-in-out, opacity 0.1s ease;
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
+    }
+    .paw-left {
+      top: 62%;
+      left: 24%;
+      transform-origin: center;
+    }
+    .paw-right {
+      top: 62%;
+      right: 24%;
+      transform-origin: center;
+    }
+
+    .paw-left.tap {
+      opacity: 1;
+      transform: translateY(14px) rotate(-15deg) scale(1.1);
+    }
+    .paw-right.tap {
+      opacity: 1;
+      transform: translateY(14px) rotate(15deg) scale(1.1);
+    }
+
+    .paw-right.wave {
+      opacity: 1;
+      top: 48%;
+      right: 18%;
+      animation: armWave 0.5s infinite alternate ease-in-out;
+    }
+
+    @keyframes armWave {
+      0% { transform: rotate(-25deg) scale(1.2); }
+      100% { transform: rotate(25deg) scale(1.2); }
+    }
+
+    /* Poking & Squash/Stretch Bounce */
+    .chibi-rig.poked {
+      animation: pokeBounce 0.48s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes pokeBounce {
+      0% { transform: scale(1, 1); }
+      30% { transform: scale(1.14, 0.85) translateY(12px); }
+      60% { transform: scale(0.92, 1.1) translateY(-18px); }
+      80% { transform: scale(1.03, 0.98) translateY(3px); }
+      100% { transform: scale(1, 1) translateY(0); }
+    }
+
+    /* Dance Animation */
+    .chibi-rig.dancing .rig-group-body {
+      animation: danceBody 0.65s infinite alternate ease-in-out;
+    }
+    .chibi-rig.dancing .rig-group-head {
+      animation: danceHead 0.65s infinite alternate ease-in-out;
+    }
+
+    @keyframes danceBody {
+      0% { transform: translateY(0) rotate(-3.5deg) scale(0.98, 1.02); }
+      100% { transform: translateY(-7px) rotate(3.5deg) scale(1.02, 0.98); }
+    }
+    @keyframes danceHead {
+      0% { transform: rotate(4deg) translateX(-1.5px); }
+      100% { transform: rotate(-4deg) translateX(1.5px); }
+    }
+
+    /* Sleep State */
+    .chibi-rig.sleeping .layer-eyerish { opacity: 0 !important; }
+    .chibi-rig.sleeping .layer-eyes-closed { opacity: 1 !important; }
+    .chibi-rig.sleeping .rig-group-head {
+      transform: translateY(2px) rotate(2deg) !important;
+    }
+
+    /* Floating Particles Canvas */
+    .particle-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 40;
+    }
+
+    /* Right Controls Column */
+    .controls-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+      max-height: 560px;
+      padding-right: 4px;
+    }
+
+    .controls-section {
+      background: rgba(245, 243, 255, 0.7);
+      border: 1px solid rgba(221, 214, 254, 0.85);
+      border-radius: 20px;
+      padding: 12px 16px;
+    }
+
+    .section-title {
+      font-size: 0.74rem;
+      font-weight: 800;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    button.pill-btn {
+      background: white;
+      color: #581c87;
+      border: 1.5px solid #ddd6fe;
+      border-radius: 12px;
+      padding: 6px 11px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(124, 58, 237, 0.08);
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    button.pill-btn:hover {
+      background: #f5f3ff;
+      border-color: #c4b5fd;
+      transform: translateY(-1px);
+    }
+
+    button.pill-btn:active {
+      transform: scale(0.96);
+    }
+
+    button.pill-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+
+    /* Live Rig Parameter Sliders */
+    .slider-row {
+      display: grid;
+      grid-template-columns: 96px 1fr 42px;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #4c1d95;
+    }
+
+    .slider-row:last-child {
+      margin-bottom: 0;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #ddd6fe;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(109, 40, 217, 0.35);
+      transition: transform 0.1s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .slider-val {
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      color: #6d28d9;
+    }
+
+    /* Bongo keystroke status */
+    .bongo-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #6b21a8;
+      margin-top: 6px;
+      width: 100%;
+    }
+
+    .keystroke-count {
+      background: #7c3aed;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.72rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="studio-card">
+    
+    <!-- LEFT: Character Rigging Stage -->
+    <div class="stage-column">
+      <div class="stage-header">
+        <h1>Nooki Live 2D Rig Studio ✨</h1>
+        <p class="subtitle">Seamless Neck Joint • Bending Arms • Dynamic Hair</p>
+      </div>
+
+      <!-- Speech Bubble -->
+      <div class="speech-bubble" id="speechBubble">
+        Hey there! Move your cursor to see me look around without neck gaps! 🐾✨
+      </div>
+
+      <!-- Stage with Character Rig -->
+      <div class="rig-stage" id="rigStage" title="Click to poke! Drag to stretch! Move mouse to track!">
+        <!-- Ground Shadow -->
+        <div class="ground-shadow" id="groundShadow"></div>
+
+        <!-- Floating Particles Canvas -->
+        <canvas class="particle-canvas" id="particleCanvas" width="300" height="400"></canvas>
+
+        <!-- Layered Rig -->
+        <div class="chibi-rig" id="chibiRig">
+          
+          <!-- BODY ASSEMBLY (Spine & Limbs, Seamless Neck Underlay) -->
+          <div class="rig-group rig-group-body" id="groupBody">
+            <img src="body.png" class="rig-layer layer-body" id="rigBody" alt="Body" />
+            <img src="short.png" class="rig-layer layer-short" id="rigShort" alt="Shorts" />
+            <img src="sport_jacket.png" class="rig-layer layer-jacket" id="rigJacket" alt="Sport Jacket" />
+          </div>
+
+          <!-- HEAD ASSEMBLY (Neck Socket Pivot 48.5% 36.5% - NO GAPS!) -->
+          <div class="rig-group rig-group-head" id="groupHead">
+            
+            <!-- Irises inside head assembly, strictly BEHIND head layer -->
+            <div class="rig-iris-wrap" id="rigIrisWrap">
+              <img src="eyerish.png" class="rig-layer layer-eyerish" id="rigIris" alt="Irises" />
+            </div>
+
+            <!-- Head base with socket cutouts -->
+            <img src="head.png" class="rig-layer layer-head" id="rigHead" alt="Head" />
+
+            <!-- Closed eyelids for natural blinking & winking -->
+            <img src="eyes_closed.png" class="rig-layer layer-eyes-closed" id="rigEyesClosed" alt="Eyes Closed" />
+
+            <!-- Cute anime blush cheeks overlay -->
+            <div class="blush-layer" id="blushLayer">
+              <div class="blush-dot"></div>
+              <div class="blush-dot"></div>
+            </div>
+
+            <!-- Hair with secondary spring inertia -->
+            <div class="rig-hair-wrap" id="rigHairWrap">
+              <img src="hair_black.png" class="rig-layer layer-hair" id="rigHair" alt="Hair" />
+            </div>
+
+          </div>
+
+          <!-- Dynamic Bongo & Waving Hand Paws Overlay -->
+          <div class="arm-overlay">
+            <div class="paw-left" id="pawLeft">🐾</div>
+            <div class="paw-right" id="pawRight">🐾</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="bongo-status">
+        <span>⌨️ Type anywhere on keyboard to bongo tap!</span>
+        <span class="keystroke-count" id="keystrokeCount">0 taps</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: Rigging Inspector & Controls -->
+    <div class="controls-column">
+      
+      <!-- 1. Motion & Actions -->
+      <div class="controls-section">
+        <div class="section-title">
+          <span>🎬 Live Motions & Actions</span>
+          <button class="pill-btn" id="soundToggle" style="padding: 2px 8px; font-size: 0.68rem;">🔊 Sound: ON</button>
+        </div>
+        <div class="pill-group">
+          <button class="pill-btn active" id="btnFollowMouse">👀 Follow Mouse: ON</button>
+          <button class="pill-btn" id="btnWave">👋 Wave Hello</button>
+          <button class="pill-btn" id="btnBlink">👁️ Blink</button>
+          <button class="pill-btn" id="btnWinkL">😉 Wink Left</button>
+          <button class="pill-btn" id="btnWinkR">😜 Wink Right</button>
+          <button class="pill-btn" id="btnPoke">✨ Poke / Pat</button>
+          <button class="pill-btn" id="btnDance">💃 Dance</button>
+          <button class="pill-btn" id="btnSleep">😴 Sleep</button>
+          <button class="pill-btn" id="btnTalk">🗣️ Talk</button>
+        </div>
+      </div>
+
+      <!-- 2. Live Rig Parameter Sliders -->
+      <div class="controls-section">
+        <div class="section-title">
+          <span>🎛️ Live Parameter Sliders</span>
+          <button class="pill-btn" id="btnResetSliders" style="padding: 2px 8px; font-size: 0.68rem;">↺ Reset</button>
+        </div>
+
+        <div class="slider-row">
+          <span>Head Angle X</span>
+          <input type="range" id="paramHeadX" min="-12" max="12" step="0.5" value="0">
+          <span class="slider-val" id="valHeadX">0°</span>
+        </div>
+        <div class="slider-row">
+          <span>Head Angle Y</span>
+          <input type="range" id="paramHeadY" min="-8" max="8" step="0.5" value="0">
+          <span class="slider-val" id="valHeadY">0°</span>
+        </div>
+        <div class="slider-row">
+          <span>Head Roll (Z)</span>
+          <input type="range" id="paramHeadZ" min="-12" max="12" step="0.5" value="0">
+          <span class="slider-val" id="valHeadZ">0°</span>
+        </div>
+        <div class="slider-row">
+          <span>EyeBall X</span>
+          <input type="range" id="paramEyeX" min="-6" max="6" step="0.5" value="0">
+          <span class="slider-val" id="valEyeX">0px</span>
+        </div>
+        <div class="slider-row">
+          <span>EyeBall Y</span>
+          <input type="range" id="paramEyeY" min="-4" max="4" step="0.5" value="0">
+          <span class="slider-val" id="valEyeY">0px</span>
+        </div>
+        <div class="slider-row">
+          <span>Body Lean</span>
+          <input type="range" id="paramBodyLean" min="-6" max="6" step="0.5" value="0">
+          <span class="slider-val" id="valBodyLean">0°</span>
+        </div>
+        <div class="slider-row">
+          <span>Hair Sway</span>
+          <input type="range" id="paramHairSway" min="-12" max="12" step="0.5" value="0">
+          <span class="slider-val" id="valHairSway">0°</span>
+        </div>
+      </div>
+
+      <!-- 3. Expressions & Reactions -->
+      <div class="controls-section">
+        <div class="section-title">
+          <span>🎭 Moods & Expressions</span>
+        </div>
+        <div class="pill-group">
+          <button class="pill-btn active" data-mood="normal">😊 Normal</button>
+          <button class="pill-btn" data-mood="happy">💖 Happy & Blush</button>
+          <button class="pill-btn" data-mood="surprised">😲 Surprised</button>
+          <button class="pill-btn" data-mood="smug">😏 Smug</button>
+        </div>
+      </div>
+
+      <!-- 4. Wardrobe & Hair Styles -->
+      <div class="controls-section">
+        <div class="section-title">
+          <span>👗 Hair & Clothes Customizer</span>
+        </div>
+        <div style="margin-bottom: 8px;">
+          <span style="font-size: 0.72rem; font-weight: 700; color: #6b21a8; margin-right: 6px;">Hair:</span>
+          <button class="pill-btn active" data-hair="hair_black.png">🖤 Raven Black</button>
+          <button class="pill-btn" data-hair="hair_blue.png">💙 Azure Blue</button>
+          <button class="pill-btn" data-hair="hair_red.png">❤️ Crimson Red</button>
+        </div>
+        <div>
+          <span style="font-size: 0.72rem; font-weight: 700; color: #6b21a8; margin-right: 6px;">Clothes:</span>
+          <button class="pill-btn active" id="btnToggleJacket">🥋 Jacket: ON</button>
+          <button class="pill-btn active" id="btnToggleShort">🩳 Shorts: ON</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // ==========================================
+    // 1. DOM REFERENCES
+    // ==========================================
+    const chibiRig = document.getElementById('chibiRig');
+    const rigStage = document.getElementById('rigStage');
+    const groupHead = document.getElementById('groupHead');
+    const groupBody = document.getElementById('groupBody');
+    const rigHairWrap = document.getElementById('rigHairWrap');
+    const rigIris = document.getElementById('rigIris');
+    const rigHair = document.getElementById('rigHair');
+    const rigJacket = document.getElementById('rigJacket');
+    const rigShort = document.getElementById('rigShort');
+    const rigEyesClosed = document.getElementById('rigEyesClosed');
+    const speechBubble = document.getElementById('speechBubble');
+    const keystrokeCountEl = document.getElementById('keystrokeCount');
+    const pawLeft = document.getElementById('pawLeft');
+    const pawRight = document.getElementById('pawRight');
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // ==========================================
+    // 2. AUDIO SYNTHESIZER
+    // ==========================================
+    let soundEnabled = true;
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playTone(freq, type = 'sine', duration = 0.12, volume = 0.15) {
+      if (!soundEnabled) return;
+      try {
+        const c = getAudioContext();
+        const osc = c.createOscillator();
+        const gain = c.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, c.currentTime);
+        gain.gain.setValueAtTime(volume, c.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(c.destination);
+        osc.start();
+        osc.stop(c.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function soundChime() {
+      playTone(523.25, 'sine', 0.1, 0.12);
+      setTimeout(() => playTone(659.25, 'sine', 0.14, 0.12), 60);
+      setTimeout(() => playTone(783.99, 'sine', 0.2, 0.15), 120);
+    }
+
+    function soundPop() { playTone(420, 'triangle', 0.08, 0.15); }
+    function soundTap() { playTone(280 + Math.random() * 80, 'sine', 0.06, 0.1); }
+
+    document.getElementById('soundToggle').addEventListener('click', (e) => {
+      soundEnabled = !soundEnabled;
+      e.target.textContent = soundEnabled ? '🔊 Sound: ON' : '🔈 Sound: OFF';
+      e.target.classList.toggle('active', soundEnabled);
+    });
+
+    // ==========================================
+    // 3. RIGGING PARAMETERS & STATE
+    // ==========================================
+    const rigState = {
+      followMouse: true,
+      isDancing: false,
+      isWaving: false,
+      isSleeping: false,
+      isTalking: false,
+      jacketOn: true,
+      shortOn: true,
+      taps: 0,
+      
+      headAngleX: 0,
+      headAngleY: 0,
+      headAngleZ: 0,
+      eyeBallX: 0,
+      eyeBallY: 0,
+      bodyLean: 0,
+      hairAngle: 0,
+      
+      targetHeadX: 0,
+      targetHeadY: 0,
+      targetHeadZ: 0,
+      targetEyeX: 0,
+      targetEyeY: 0,
+      targetBodyLean: 0,
+      
+      hairVelocity: 0,
+      lastHeadZ: 0
+    };
+
+    // ==========================================
+    // 4. ANIMATION & LIFE ENGINE LOOP
+    // ==========================================
+    let breatheTime = 0;
+    let blinkTimer = null;
+
+    function animate() {
+      breatheTime += 0.035;
+
+      // 1. Natural Breathing Motion
+      let breathY = 0;
+      let breathScale = 1;
+      if (!rigState.isDancing) {
+        breathY = Math.sin(breatheTime) * (rigState.isSleeping ? 1.5 : 2.5);
+        breathScale = 1 + Math.sin(breatheTime) * (rigState.isSleeping ? 0.008 : 0.012);
+      }
+
+      // 2. Smooth Interpolation (Lerp)
+      const lerpSpeed = 0.14;
+      rigState.headAngleX += (rigState.targetHeadX - rigState.headAngleX) * lerpSpeed;
+      rigState.headAngleY += (rigState.targetHeadY - rigState.headAngleY) * lerpSpeed;
+      rigState.headAngleZ += (rigState.targetHeadZ - rigState.headAngleZ) * lerpSpeed;
+      rigState.eyeBallX += (rigState.targetEyeX - rigState.eyeBallX) * 0.18;
+      rigState.eyeBallY += (rigState.targetEyeY - rigState.eyeBallY) * 0.18;
+      rigState.bodyLean += (rigState.targetBodyLean - rigState.bodyLean) * 0.12;
+
+      // 3. Secondary Spring Physics on Hair
+      const headZVel = rigState.headAngleZ - rigState.lastHeadZ;
+      rigState.lastHeadZ = rigState.headAngleZ;
+      rigState.hairVelocity += -headZVel * 0.5 - rigState.hairAngle * 0.16;
+      rigState.hairVelocity *= 0.76;
+      rigState.hairAngle += rigState.hairVelocity;
+
+      // 4. Apply Transforms to Rig Hierarchy (ANATOMICALLY LOCKED AT NECK - ZERO SEPARATION)
+      if (!rigState.isDancing) {
+        // Head rotates strictly around neck pivot (48.5% 36.5%) with subtle 2.5D perspective skew
+        const perspectiveSkew = -rigState.headAngleX * 0.15;
+        const headTrans = `rotate(${rigState.headAngleZ}deg) skewX(${perspectiveSkew}deg) translateY(${rigState.headAngleY * 0.3 - breathY * 0.3}px)`;
+        groupHead.style.transform = headTrans;
+
+        // Eye Irises move inside socket cutouts (relative to head)
+        rigIris.style.transform = `translate(${rigState.eyeBallX.toFixed(2)}px, ${rigState.eyeBallY.toFixed(2)}px)`;
+
+        // Hair Wrap: Spring secondary motion relative to head skull
+        rigHairWrap.style.transform = `rotate(${rigState.hairAngle.toFixed(2)}deg)`;
+
+        // Body Assembly: Gentle breathing expansion & counter-lean
+        const bodyTrans = `translate(0px, ${-breathY}px) rotate(${rigState.bodyLean}deg) scale(1, ${breathScale.toFixed(4)})`;
+        groupBody.style.transform = bodyTrans;
+      }
+
+      if (rigState.followMouse) {
+        syncSlidersDisplay();
+      }
+
+      updateParticles();
+
+      requestAnimationFrame(animate);
+    }
+
+    // ==========================================
+    // 5. MOUSE & POINTER TRACKING
+    // ==========================================
+    window.addEventListener('mousemove', (e) => {
+      if (!rigState.followMouse || rigState.isSleeping || rigState.isDancing) return;
+
+      const rect = rigStage.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height * 0.36;
+
+      const dx = (e.clientX - centerX) / (window.innerWidth / 2);
+      const dy = (e.clientY - centerY) / (window.innerHeight / 2);
+
+      // Anatomical rotation limits around neck
+      rigState.targetHeadZ = Math.max(-9, Math.min(9, dx * 8.5));
+      rigState.targetHeadX = Math.max(-10, Math.min(10, dx * 9.5));
+      rigState.targetHeadY = Math.max(-6, Math.min(6, dy * 5.5));
+
+      // Irises strictly clamped inside eye sockets
+      rigState.targetEyeX = Math.max(-5.5, Math.min(5.5, dx * 5.5));
+      rigState.targetEyeY = Math.max(-3.5, Math.min(3.5, dy * 3.5));
+
+      // Subtle body counter-balance lean
+      rigState.targetBodyLean = Math.max(-3.5, Math.min(3.5, -dx * 2.8));
+    });
+
+    // ==========================================
+    // 6. BLINKING & WINKING
+    // ==========================================
+    function triggerBlink() {
+      if (chibiRig.classList.contains('wink-left') || chibiRig.classList.contains('wink-right')) return;
+      chibiRig.classList.add('blink');
+      soundPop();
+      setTimeout(() => chibiRig.classList.remove('blink'), 140);
+      scheduleNextBlink();
+    }
+
+    function scheduleNextBlink() {
+      if (blinkTimer) clearTimeout(blinkTimer);
+      const delay = Math.random() * 3200 + 2200;
+      blinkTimer = setTimeout(triggerBlink, delay);
+    }
+    scheduleNextBlink();
+
+    document.getElementById('btnBlink').addEventListener('click', triggerBlink);
+
+    document.getElementById('btnWinkL').addEventListener('click', () => {
+      chibiRig.classList.remove('wink-right');
+      chibiRig.classList.toggle('wink-left');
+      if (chibiRig.classList.contains('wink-left')) {
+        soundChime();
+        say("Wink! 😉✨");
+      }
+    });
+
+    document.getElementById('btnWinkR').addEventListener('click', () => {
+      chibiRig.classList.remove('wink-left');
+      chibiRig.classList.toggle('wink-right');
+      if (chibiRig.classList.contains('wink-right')) {
+        soundChime();
+        say("Playful wink! 😜💖");
+      }
+    });
+
+    // ==========================================
+    // 7. POKING, PATTING & JELLY DRAG
+    // ==========================================
+    function triggerPoke() {
+      chibiRig.classList.remove('poked');
+      void chibiRig.offsetWidth; // re-flow
+      chibiRig.classList.add('poked');
+      soundChime();
+      spawnHearts(6);
+      say("Hehe! Poked and bouncy with zero neck separation! 💖🐾");
+      setTimeout(() => chibiRig.classList.remove('poked'), 500);
+    }
+
+    rigStage.addEventListener('click', triggerPoke);
+    document.getElementById('btnPoke').addEventListener('click', triggerPoke);
+
+    // Interactive Drag & Spring Release
+    let isDragging = false;
+    let dragStartY = 0;
+    let dragCurrentY = 0;
+
+    rigStage.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      dragStartY = e.clientY;
+      dragCurrentY = e.clientY;
+      chibiRig.style.transition = 'none';
+    });
+
+    window.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      dragCurrentY = e.clientY;
+      const deltaY = dragCurrentY - dragStartY;
+      const squish = Math.max(-40, Math.min(50, deltaY));
+      const scaleY = 1 + (squish / 150);
+      const scaleX = 1 - (squish / 300);
+      chibiRig.style.transform = `translate(0px, ${squish * 0.5}px) scale(${scaleX}, ${scaleY})`;
+    });
+
+    window.addEventListener('pointerup', () => {
+      if (!isDragging) return;
+      isDragging = false;
+      chibiRig.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+      chibiRig.style.transform = '';
+      soundPop();
+    });
+
+    // ==========================================
+    // 8. DANCE, WAVE, SLEEP & TALK
+    // ==========================================
+    document.getElementById('btnWave').addEventListener('click', (e) => {
+      rigState.isWaving = !rigState.isWaving;
+      pawRight.classList.toggle('wave', rigState.isWaving);
+      e.target.classList.toggle('active', rigState.isWaving);
+      if (rigState.isWaving) {
+        soundChime();
+        say("Hello! Waving at you with cute paws! 👋✨");
+      }
+    });
+
+    document.getElementById('btnDance').addEventListener('click', (e) => {
+      rigState.isDancing = !rigState.isDancing;
+      chibiRig.classList.toggle('dancing', rigState.isDancing);
+      e.target.classList.toggle('active', rigState.isDancing);
+      if (rigState.isDancing) {
+        say("Dancing to the groove! 💃🎶");
+        soundChime();
+      } else {
+        groupHead.style.transform = '';
+        groupBody.style.transform = '';
+        say("Phew! Great dance! ✨");
+      }
+    });
+
+    document.getElementById('btnSleep').addEventListener('click', (e) => {
+      rigState.isSleeping = !rigState.isSleeping;
+      chibiRig.classList.toggle('sleeping', rigState.isSleeping);
+      e.target.classList.toggle('active', rigState.isSleeping);
+      if (rigState.isSleeping) {
+        say("So cozy... Taking a power nap 💤");
+      } else {
+        say("Good morning! Back to full energy! ☀️");
+      }
+    });
+
+    let talkInterval = null;
+    document.getElementById('btnTalk').addEventListener('click', (e) => {
+      rigState.isTalking = !rigState.isTalking;
+      e.target.classList.toggle('active', rigState.isTalking);
+      if (rigState.isTalking) {
+        say("Chatting away! Head tilts smoothly on the neck joint! 🗣️💬");
+        talkInterval = setInterval(() => {
+          rigState.targetHeadY = (Math.random() - 0.5) * 6;
+          playTone(480 + Math.random() * 120, 'triangle', 0.05, 0.08);
+        }, 150);
+      } else {
+        clearInterval(talkInterval);
+        rigState.targetHeadY = 0;
+        say("Finished chatting! ✨");
+      }
+    });
+
+    // ==========================================
+    // 9. KEYBOARD BONGO TYPING
+    // ==========================================
+    window.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'INPUT') return;
+      rigState.taps++;
+      keystrokeCountEl.textContent = `${rigState.taps} taps`;
+
+      // Rapid cute bongo paw tap animation
+      if (rigState.taps % 2 === 0) {
+        pawLeft.classList.add('tap');
+        setTimeout(() => pawLeft.classList.remove('tap'), 110);
+      } else {
+        pawRight.classList.add('tap');
+        setTimeout(() => pawRight.classList.remove('tap'), 110);
+      }
+
+      // Gentle body tilt on typing
+      const tilt = (rigState.taps % 2 === 0) ? -1.8 : 1.8;
+      groupBody.style.transform = `translateY(2px) rotate(${tilt}deg)`;
+      setTimeout(() => { groupBody.style.transform = ''; }, 75);
+      
+      soundTap();
+      spawnSparkle();
+    });
+
+    // ==========================================
+    // 10. EXPRESSIONS
+    // ==========================================
+    document.querySelectorAll('[data-mood]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-mood]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const mood = btn.getAttribute('data-mood');
+        chibiRig.className = 'chibi-rig';
+        if (rigState.isDancing) chibiRig.classList.add('dancing');
+        if (rigState.isSleeping) chibiRig.classList.add('sleeping');
+        
+        chibiRig.classList.add(mood);
+        soundChime();
+
+        if (mood === 'happy') {
+          say("Super happy and cheerful today! 💖✨");
+          spawnHearts(5);
+        } else if (mood === 'surprised') {
+          say("Whoa! Did you see that?! 😲⚡");
+        } else if (mood === 'smug') {
+          say("Heh, I knew I had the smoothest rig! 😏");
+        } else {
+          say("Back to relaxed normal mood 😊");
+        }
+      });
+    });
+
+    // ==========================================
+    // 11. WARDROBE & HAIR CUSTOMIZATION
+    // ==========================================
+    document.querySelectorAll('[data-hair]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-hair]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const src = btn.getAttribute('data-hair');
+        rigHair.src = src;
+        soundPop();
+        say(`Switched hair style to ${btn.textContent.trim()}! 💇✨`);
+      });
+    });
+
+    document.getElementById('btnToggleJacket').addEventListener('click', (e) => {
+      rigState.jacketOn = !rigState.jacketOn;
+      rigJacket.style.display = rigState.jacketOn ? 'block' : 'none';
+      e.target.textContent = rigState.jacketOn ? '🥋 Jacket: ON' : '🥋 Jacket: OFF';
+      e.target.classList.toggle('active', rigState.jacketOn);
+      soundPop();
+    });
+
+    document.getElementById('btnToggleShort').addEventListener('click', (e) => {
+      rigState.shortOn = !rigState.shortOn;
+      rigShort.style.display = rigState.shortOn ? 'block' : 'none';
+      e.target.textContent = rigState.shortOn ? '🩳 Shorts: ON' : '🩳 Shorts: OFF';
+      e.target.classList.toggle('active', rigState.shortOn);
+      soundPop();
+    });
+
+    // ==========================================
+    // 12. LIVE PARAMETER SLIDERS
+    // ==========================================
+    const sliders = [
+      { id: 'paramHeadX', valId: 'valHeadX', unit: '°', prop: 'targetHeadX' },
+      { id: 'paramHeadY', valId: 'valHeadY', unit: '°', prop: 'targetHeadY' },
+      { id: 'paramHeadZ', valId: 'valHeadZ', unit: '°', prop: 'targetHeadZ' },
+      { id: 'paramEyeX', valId: 'valEyeX', unit: 'px', prop: 'targetEyeX' },
+      { id: 'paramEyeY', valId: 'valEyeY', unit: 'px', prop: 'targetEyeY' },
+      { id: 'paramBodyLean', valId: 'valBodyLean', unit: '°', prop: 'targetBodyLean' },
+      { id: 'paramHairSway', valId: 'valHairSway', unit: '°', prop: 'hairAngle', direct: true }
+    ];
+
+    sliders.forEach(s => {
+      const input = document.getElementById(s.id);
+      input.addEventListener('input', () => {
+        rigState.followMouse = false;
+        document.getElementById('btnFollowMouse').classList.remove('active');
+        document.getElementById('btnFollowMouse').textContent = '👀 Follow Mouse: OFF';
+
+        const val = parseFloat(input.value);
+        document.getElementById(s.valId).textContent = `${val}${s.unit}`;
+        rigState[s.prop] = val;
+      });
+    });
+
+    function syncSlidersDisplay() {
+      sliders.forEach(s => {
+        const val = rigState[s.prop];
+        const input = document.getElementById(s.id);
+        if (input && document.activeElement !== input) {
+          input.value = val.toFixed(1);
+          document.getElementById(s.valId).textContent = `${val.toFixed(1)}${s.unit}`;
+        }
+      });
+    }
+
+    document.getElementById('btnFollowMouse').addEventListener('click', (e) => {
+      rigState.followMouse = !rigState.followMouse;
+      e.target.textContent = rigState.followMouse ? '👀 Follow Mouse: ON' : '👀 Follow Mouse: OFF';
+      e.target.classList.toggle('active', rigState.followMouse);
+      if (rigState.followMouse) say("Following your cursor again! 👀");
+    });
+
+    document.getElementById('btnResetSliders').addEventListener('click', () => {
+      sliders.forEach(s => {
+        rigState[s.prop] = 0;
+        document.getElementById(s.id).value = 0;
+        document.getElementById(s.valId).textContent = `0${s.unit}`;
+      });
+      say("Parameters reset to neutral! ↺");
+    });
+
+    // ==========================================
+    // 13. PARTICLE EFFECTS (Hearts & Sparkles)
+    // ==========================================
+    const particles = [];
+
+    function spawnHearts(count = 4) {
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: canvas.width / 2 + (Math.random() - 0.5) * 60,
+          y: canvas.height * 0.45 + (Math.random() - 0.5) * 40,
+          vx: (Math.random() - 0.5) * 2.5,
+          vy: -2 - Math.random() * 2.5,
+          size: 16 + Math.random() * 10,
+          text: Math.random() > 0.5 ? '💖' : '✨',
+          alpha: 1,
+          decay: 0.02 + Math.random() * 0.015
+        });
+      }
+    }
+
+    function spawnSparkle() {
+      particles.push({
+        x: canvas.width / 2 + (Math.random() - 0.5) * 120,
+        y: canvas.height * 0.82 + (Math.random() - 0.5) * 20,
+        vx: (Math.random() - 0.5) * 3,
+        vy: -1.5 - Math.random() * 2,
+        size: 12 + Math.random() * 8,
+        text: '✨',
+        alpha: 1,
+        decay: 0.035
+      });
+    }
+
+    function updateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.alpha -= p.decay;
+
+        if (p.alpha <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.font = `${p.size}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText(p.text, p.x, p.y);
+        ctx.restore();
+      }
+    }
+
+    // Speech helper
+    let bubbleTimeout = null;
+    function say(text, duration = 3200) {
+      if (bubbleTimeout) clearTimeout(bubbleTimeout);
+      speechBubble.textContent = text;
+      speechBubble.style.transform = 'scale(1.04)';
+      setTimeout(() => { speechBubble.style.transform = 'scale(1)'; }, 150);
+      bubbleTimeout = setTimeout(() => {
+        speechBubble.textContent = "Seamless 2D rig running: Zero neck separation & smooth tracking! 🐾";
+      }, duration);
+    }
+
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>
