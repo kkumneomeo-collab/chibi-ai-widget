@@ -42,7 +42,7 @@ if (typeof window !== 'undefined') {
 // 1. STATE & CONFIG
 // ==========================================
 const CONFIG = {
-  idleSleepTimeMs: 5000,
+  idleSleepTimeMs: 180000,
   minScale: 0.5,
   maxScale: 2.3,
 };
@@ -788,57 +788,68 @@ function scheduleNextBlink() {
   blinkTimer = setTimeout(triggerBlink, nextDelay);
 }
 
-function updateEyeGaze() {
+// Idle head sway runs all the time, on its own. The mouse moves the EYES only.
+const NOOKI_SWAY = { amp: 1.7, speed: 0.0011, amp2: 0.6, speed2: 0.00043 };
+let nookiLastPointerWake = 0;
+
+function updateEyeGaze(now) {
+  const t = typeof now === 'number' ? now : performance.now();
   currentEyeX += (targetEyeX - currentEyeX) * 0.18;
   currentEyeY += (targetEyeY - currentEyeY) * 0.18;
   currentHeadRot += (targetHeadRot - currentHeadRot) * 0.12;
 
-  const eyeTransform = `translate(${currentEyeX.toFixed(2)}px, ${currentEyeY.toFixed(2)}px)`;
-  const headTransform = `rotate(${currentHeadRot.toFixed(2)}deg)`;
+  const sway = Math.sin(t * NOOKI_SWAY.speed) * NOOKI_SWAY.amp + Math.sin(t * NOOKI_SWAY.speed2 + 1.3) * NOOKI_SWAY.amp2;
+  const rot = (sway + currentHeadRot).toFixed(2);
+  const headTransform = `rotate(${rot}deg)`;
+  // Eyes tilt together with the head, then slide toward the pointer
+  const eyeTransform = `rotate(${rot}deg) translate(${currentEyeX.toFixed(2)}px, ${currentEyeY.toFixed(2)}px)`;
 
   if (!state.isSleeping) {
-    if (elements.rigIris) elements.rigIris.style.transform = eyeTransform;
-    if (elements.floatingRigIris) elements.floatingRigIris.style.transform = eyeTransform;
-    const wIris = document.getElementById('wardrobeRigIris');
-    if (wIris) wIris.style.transform = eyeTransform;
-
-    if (elements.rigHead) elements.rigHead.style.transform = headTransform;
-    if (elements.floatingRigHead) elements.floatingRigHead.style.transform = headTransform;
-    const wHead = document.getElementById('wardrobeRigHead');
-    if (wHead) wHead.style.transform = headTransform;
-
-    if (elements.rigEyesClosed) elements.rigEyesClosed.style.transform = headTransform;
-    if (elements.floatingRigEyesClosed) elements.floatingRigEyesClosed.style.transform = headTransform;
-    const wEyesClosed = document.getElementById('wardrobeRigEyesClosed');
-    if (wEyesClosed) wEyesClosed.style.transform = headTransform;
-
-    if (elements.rigHair) elements.rigHair.style.transform = headTransform;
-    if (elements.floatingRigHair) elements.floatingRigHair.style.transform = headTransform;
-    const wHair = document.getElementById('wardrobeRigHair');
-    if (wHair) wHair.style.transform = headTransform;
+    [elements.rigIris, elements.floatingRigIris, document.getElementById('wardrobeRigIris')].forEach(el => {
+      if (!el) return;
+      el.style.transformOrigin = '50% 36%';
+      el.style.transform = eyeTransform;
+    });
+    [
+      elements.rigHead, elements.floatingRigHead, document.getElementById('wardrobeRigHead'),
+      elements.rigEyesClosed, elements.floatingRigEyesClosed, document.getElementById('wardrobeRigEyesClosed'),
+      elements.rigHair, elements.floatingRigHair, document.getElementById('wardrobeRigHair')
+    ].forEach(el => { if (el) el.style.transform = headTransform; });
   }
 
-  if (Math.abs(targetEyeX - currentEyeX) > 0.05 || Math.abs(targetEyeY - currentEyeY) > 0.05 || Math.abs(targetHeadRot - currentHeadRot) > 0.05) {
-    eyeAnimFrame = requestAnimationFrame(updateEyeGaze);
-  } else {
-    eyeAnimFrame = null;
-  }
+  // Keep running: the idle sway never stops (the browser pauses it by itself when the window is hidden)
+  eyeAnimFrame = requestAnimationFrame(updateEyeGaze);
 }
 
 function handlePointerMove(e) {
+  // Moving the mouse keeps the companion awake
+  const nowMs = Date.now();
+  if (nowMs - nookiLastPointerWake > 1000) {
+    nookiLastPointerWake = nowMs;
+    wakeUp();
+    scheduleIdleSleep();
+  }
   if (state.isSleeping) return;
-  const stage = elements.characterStage || elements.floatingPetStage || elements.chibiInner;
-  if (!stage) return;
-  const rect = stage.getBoundingClientRect();
-  const centerX = rect.left + rect.width / 2;
-  const centerY = rect.top + rect.height * 0.38;
 
-  const dx = (e.clientX - centerX) / (window.innerWidth / 2 || 1);
-  const dy = (e.clientY - centerY) / (window.innerHeight / 2 || 1);
+  const candidates = isPetWindow
+    ? [elements.floatingPetStage, elements.characterStage, elements.chibiInner]
+    : [elements.characterStage, document.getElementById('wardrobeChibiInner'), elements.floatingPetStage, elements.chibiInner];
+  let rect = null;
+  for (const el of candidates) {
+    if (!el) continue;
+    const r = el.getBoundingClientRect();
+    if (r.width > 0 && r.height > 0) { rect = r; break; }
+  }
+  const centerX = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
+  const centerY = rect ? rect.top + rect.height * 0.38 : window.innerHeight * 0.38;
+
+  const span = Math.max(window.innerWidth / 2, 420);
+  const dx = (e.clientX - centerX) / span;
+  const dy = (e.clientY - centerY) / span;
 
   targetEyeX = Math.max(-5.5, Math.min(5.5, dx * 6));
   targetEyeY = Math.max(-3.5, Math.min(3.5, dy * 4));
-  targetHeadRot = Math.max(-3, Math.min(3, dx * 3.5));
+  targetHeadRot = 0; // eyes only: the head does not chase the mouse
 
   if (!eyeAnimFrame) {
     eyeAnimFrame = requestAnimationFrame(updateEyeGaze);
@@ -849,8 +860,8 @@ function autonomousSaccade() {
   if (!state.isSleeping && Math.random() < 0.6) {
     const saccades = [
       { x: 0, y: 0, rot: 0 },
-      { x: -3.5, y: -1, rot: -1.5 },
-      { x: 3.5, y: -1, rot: 1.5 },
+      { x: -3.5, y: -1, rot: -1.2 },
+      { x: 3.5, y: -1, rot: 1.2 },
       { x: 0, y: 1.5, rot: 0 }
     ];
     const pick = saccades[Math.floor(Math.random() * saccades.length)];
@@ -3357,8 +3368,13 @@ function init() {
 
   // Initialize Live 2D Rigging, Gaze Tracking & Blinking
   window.addEventListener('mousemove', handlePointerMove);
+  // Desktop app: follow the mouse anywhere on the screen, not only over this window
+  if (window.desktopAPI && typeof window.desktopAPI.onCursorPos === 'function') {
+    window.desktopAPI.onCursorPos((x, y) => handlePointerMove({ clientX: x, clientY: y }));
+  }
   scheduleNextBlink();
   autonomousSaccade();
+  if (!eyeAnimFrame) eyeAnimFrame = requestAnimationFrame(updateEyeGaze);
 
   // Initialize All-in-One Desktop App Tabs & Window Controls
   initDesktopAppTabs();

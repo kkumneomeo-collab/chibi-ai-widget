@@ -1,0 +1,114 @@
+/* NOOKI GENTLE REMINDERS (added 2026-11-26) - goes with nooki-reminders.js */
+
+/* small card, bottom right of the main window */
+.nooki-rem-card {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(380px, calc(100vw - 44px));
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 2px solid #e9d5ff;
+  box-shadow: 0 10px 28px rgba(124, 58, 237, 0.18);
+  color: #3b2a63;
+  font-family: 'Nunito', system-ui, sans-serif;
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  box-sizing: border-box;
+}
+.nooki-rem-card.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.nooki-rem-icon { font-size: 1.5rem; line-height: 1; flex: 0 0 auto; }
+.nooki-rem-body { flex: 1 1 auto; min-width: 0; }
+.nooki-rem-title { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: #a78bfa; }
+.nooki-rem-text { font-size: 0.88rem; font-weight: 700; overflow-wrap: anywhere; }
+.nooki-rem-actions { display: flex; flex-direction: column; gap: 6px; flex: 0 0 auto; }
+
+.nooki-rem-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  background: #8b5cf6;
+  color: #ffffff;
+  white-space: nowrap;
+}
+.nooki-rem-btn:hover { background: #7c3aed; }
+.nooki-rem-btn-soft { background: #f3e8ff; color: #6d28d9; }
+.nooki-rem-btn-soft:hover { background: #e9d5ff; }
+
+/* buttons inside Nooki's speech bubble (bubble-only style and the floating pet) */
+.nooki-rem-bubble { display: inline-block; }
+.nooki-rem-bubble-actions { display: flex; gap: 6px; margin-top: 6px; justify-content: center; }
+.nooki-rem-bubble-actions .nooki-rem-btn { padding: 4px 10px; font-size: 0.7rem; }
+
+/* bell on each quest */
+.task-item { position: relative; }
+.nooki-rem-bell {
+  margin-left: auto;
+  flex: 0 0 auto;
+  border: none;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 800;
+  cursor: pointer;
+  background: transparent;
+  color: #6d28d9;
+  opacity: 0.4;
+  white-space: nowrap;
+}
+.nooki-rem-bell:hover { opacity: 1; background: #f3e8ff; }
+.nooki-rem-bell.is-set { opacity: 1; background: #f3e8ff; }
+.nooki-rem-bell:disabled { opacity: 0.25; cursor: default; }
+
+.nooki-rem-picker {
+  position: absolute;
+  right: 6px;
+  top: calc(100% - 4px);
+  z-index: 50;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 2px solid #e9d5ff;
+  box-shadow: 0 8px 22px rgba(124, 58, 237, 0.18);
+  max-width: 260px;
+  box-sizing: border-box;
+}
+.nooki-rem-picker-label { font-size: 0.72rem; font-weight: 800; color: #6d28d9; width: 100%; }
+.nooki-rem-time {
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 5px 8px;
+  border-radius: 10px;
+  border: 2px solid #e9d5ff;
+  color: #3b2a63;
+  background: #faf5ff;
+  box-sizing: border-box;
+}
+
+/* settings rows */
+.nooki-rem-options { display: flex; flex-direction: column; gap: 10px; transition: opacity 0.2s ease; }
+.nooki-rem-options.is-off { opacity: 0.4; pointer-events: none; }
+.nooki-rem-time-pair { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.nooki-rem-time-pair .nooki-rem-time { width: auto; flex: 1 1 96px; min-width: 96px; }
+.nooki-rem-to { font-size: 0.78rem; font-weight: 700; color: #94a3b8; }
+.nooki-rem-quiet-times.is-off { opacity: 0.4; pointer-events: none; }
+.nooki-rem-hint { margin: 0; }
+
+.nooki-rem-dim { opacity: 0.4; pointer-events: none; }

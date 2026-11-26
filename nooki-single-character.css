@@ -1,0 +1,256 @@
+/* ============================================================
+   NOOKI SINGLE CHARACTER MODE (added 2026-11-26)
+   Everything here only applies while <html> has the class
+   "nooki-single", which nooki-single-character.js adds when
+   NOOKI_SINGLE_CHARACTER is true. Turn the flag off (or remove the
+   two nooki-single-character tags from index.html) and the old
+   boy/girl wardrobe rig comes back untouched.
+   ============================================================ */
+
+/* 1. Only the four character layers are drawn: no wardrobe pieces on her */
+html.nooki-single .chibi-rig .layer-hair,
+html.nooki-single .chibi-rig .layer-jacket,
+html.nooki-single .chibi-rig .layer-short,
+html.nooki-single .chibi-rig .layer-hand-l,
+html.nooki-single .chibi-rig .layer-hand-r,
+html.nooki-single .chibi-hat-layer,
+html.nooki-single .chibi-outfit-badge {
+  display: none !important;
+}
+
+/* 2. Head pivot for this character (neck), and no transform lag on the layers */
+html.nooki-single .chibi-rig .layer-head,
+html.nooki-single .chibi-rig .layer-eyes-closed,
+html.nooki-single .chibi-rig .layer-eyerish,
+html.nooki-single .chibi-rig .nooki-mouth-wrap {
+  transform-origin: 50% 38.9%;
+  will-change: transform;
+}
+html.nooki-single .chibi-rig .rig-layer {
+  transition: opacity 0.1s ease;
+}
+/* Hide the old boy picture until her layers are set */
+html.nooki-single .chibi-rig:not(.nooki-char-ready) .rig-layer {
+  visibility: hidden;
+}
+
+/* 3. Code-drawn talking mouth (placeholder until a drawn mouth layer exists) */
+html.nooki-single .chibi-rig .nooki-mouth-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 26;
+  pointer-events: none;
+}
+html.nooki-single .chibi-rig .nooki-mouth {
+  position: absolute;
+  left: 42.5%;
+  top: 35.98%;
+  width: 5.2%;
+  height: 1.7%;
+  background: #8f3f48;
+  border: 1px solid #6b3a34;
+  border-radius: 30% 30% 60% 60% / 20% 20% 80% 80%;
+  transform-origin: 50% 0;
+  transform: scaleY(0);
+  opacity: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+html.nooki-single .chibi-rig .nooki-mouth::after {
+  content: "";
+  position: absolute;
+  left: 22%;
+  right: 22%;
+  bottom: -25%;
+  height: 60%;
+  border-radius: 50%;
+  background: #e58a8f;
+}
+html.nooki-single .chibi-rig.sleeping .nooki-mouth {
+  opacity: 0 !important;
+}
+
+/* 4. NO whole-body jumping: typing hops and poke bounces are switched off */
+html.nooki-single .bongo-tap-left .chibi-character-wrap,
+html.nooki-single .bongo-tap-right .chibi-character-wrap,
+html.nooki-single .state-poked .chibi-character-wrap,
+html.nooki-single .floating-pet-stage.state-poked {
+  animation: none !important;
+}
+html.nooki-single .chibi-rig.poked {
+  animation: idleBreathe 3.6s ease-in-out infinite !important;
+}
+html.nooki-single .chibi-rig.sleeping.poked {
+  animation: sleepBreathe 4.8s ease-in-out infinite !important;
+}
+
+/* 5. Ready-made modes (Working clip, Level-up picture) shown over the rig */
+html.nooki-single .chibi-rig .nooki-mode-layer {
+  position: absolute;
+  left: 50%;
+  bottom: 3%;
+  height: 84%;
+  aspect-ratio: 1 / 1;
+  transform: translateX(-50%) scale(0.94);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 40;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s linear 0.25s;
+}
+html.nooki-single .chibi-rig .nooki-mode-layer > video,
+html.nooki-single .chibi-rig .nooki-mode-layer > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+html.nooki-single .chibi-rig .nooki-mode-working {
+  border-radius: 24%;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9);
+}
+html.nooki-single .chibi-rig .nooki-mode-levelup {
+  height: 96%;
+  bottom: 0;
+}
+html.nooki-single .chibi-rig .nooki-mode-levelup > img {
+  object-fit: contain;
+}
+
+html.nooki-single .chibi-rig.nooki-mode-on-working .nooki-mode-working,
+html.nooki-single .chibi-rig.nooki-mode-on-levelup .nooki-mode-levelup {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) scale(1);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0s;
+}
+/* While a mode picture is up, the layered idle figure fades out (it keeps running underneath) */
+html.nooki-single .chibi-rig.nooki-mode-on-working > .rig-layer,
+html.nooki-single .chibi-rig.nooki-mode-on-levelup > .rig-layer,
+html.nooki-single .chibi-rig.nooki-mode-on-working > .nooki-mouth-wrap,
+html.nooki-single .chibi-rig.nooki-mode-on-levelup > .nooki-mouth-wrap {
+  opacity: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.nooki-single .chibi-rig .nooki-mode-layer { transition: none; }
+}
+
+/* 6. Floating pet (added 2026-11-26): clean and transparent, no purple haze box,
+      and she stands ON the cloud with no gap. To undo, delete this block. */
+html.nooki-single .floating-screen-pet,
+html.nooki-single .floating-pet-stage .chibi-rig,
+html.nooki-single .floating-pet-stage .cloud-img {
+  filter: none !important;
+}
+html.nooki-single .floating-pet-stage .chibi-character-wrap {
+  position: relative;
+  z-index: 6;
+}
+/* No cloud under the floating pet: only the small key counter stays below her feet */
+html.nooki-single .floating-pet-stage .cloud-img {
+  display: none !important;
+}
+html.nooki-single .floating-pet-stage .cloud-pedestal-wrap {
+  margin-top: calc(-8px * var(--scale, 1.0)) !important;
+  min-height: calc(26px * var(--scale, 1.0));
+  min-width: calc(90px * var(--scale, 1.0));
+}
+html.nooki-single .floating-pet-stage .keystroke-badge {
+  bottom: 0 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* 7. Speech bubble on the floating pet: hidden until she has something to say */
+html.nooki-single .floating-pet-bubble {
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18) !important;
+  transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+}
+html.nooki-single .floating-pet-bubble.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.2s ease, visibility 0s;
+}
+html.nooki-single .floating-tool-btn {
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 8. Touch reactions (nooki-pet-touch.js): happy closed eyes + little floating hearts */
+html.nooki-single .chibi-rig.nooki-happy-eyes .layer-eyerish { opacity: 0 !important; }
+html.nooki-single .chibi-rig.nooki-happy-eyes .layer-eyes-closed { opacity: 1 !important; }
+html.nooki-single .nooki-touch-bit {
+  position: absolute;
+  top: 18%;
+  font-size: calc(15px * var(--scale, 1.0));
+  line-height: 1;
+  pointer-events: none;
+  z-index: 70;
+  opacity: 0;
+  animation: nookiTouchBit 1.3s ease-out forwards;
+}
+@keyframes nookiTouchBit {
+  0% { opacity: 0; transform: translate(0, 6px) scale(0.5); }
+  20% { opacity: 1; transform: translate(0, -6px) scale(1.1); }
+  100% { opacity: 0; transform: translate(var(--drift, 0px), -46px) scale(0.9); }
+}
+
+/* 9. Working clip is now a cut-out (transparent), so no white card behind it */
+html.nooki-single .chibi-rig .nooki-mode-working {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent 99%);
+  mask-image: linear-gradient(to bottom, #000 80%, transparent 99%);
+}
+
+/* 10. Dashboard: she stands ON the cloud, no gap (feet sink a little into it).
+       To undo, delete this block. */
+html.nooki-single .hero-card-right .cloud-pedestal-wrap {
+  margin-top: -30px !important;
+}
+
+/* 11. Floating pet resize circle: it could never be grabbed before (pointer-events was none).
+       Hidden until the mouse is over her, then drag it to make her bigger or smaller. */
+html.nooki-single .floating-pet-stage .resize-handle {
+  pointer-events: auto !important;
+  opacity: 0 !important;
+  width: 20px;
+  height: 20px;
+  right: calc(-6px * var(--scale, 1.0));
+  bottom: calc(-2px * var(--scale, 1.0));
+  transform: none !important;
+  transition: opacity 0.15s ease;
+  z-index: 80;
+}
+html.nooki-single .floating-screen-pet:hover .resize-handle,
+html.nooki-single .floating-screen-pet.nooki-resizing .resize-handle {
+  opacity: 1 !important;
+}
+
+/* 13. Settings page: cards keep their own height and pack into columns,
+       so a short card (Daily Goals) no longer shows a big empty bottom.
+       To undo, delete this block. */
+.settings-cards-grid {
+  display: block !important;
+  column-width: 290px;
+  column-gap: 16px;
+}
+.settings-cards-grid > .settings-card {
+  break-inside: avoid;
+  -webkit-column-break-inside: avoid;
+  margin: 0 0 16px 0;
+  width: 100%;
+}
+
+/* 12. Key count switched off in Settings: the little count badge is hidden everywhere */
+html.nooki-hide-keycount .keystroke-badge,
+html.nooki-hide-keycount .keystroke-badge.show {
+  display: none !important;
+}

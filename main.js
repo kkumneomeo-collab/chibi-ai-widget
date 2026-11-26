@@ -217,7 +217,10 @@ ipcMain.on('set-widget-scale', (event, scale, menuState) => {
   const targetWin = petWindow && !petWindow.isDestroyed() ? petWindow : BrowserWindow.fromWebContents(event.sender);
   if (!targetWin || targetWin.isDestroyed()) return;
   currentScale = scale || 1.0;
-  isMenuOpen = !!menuState;
+  // The floating pet has no menus of its own any more, so its window always keeps the
+  // pet size. (Before, opening Settings / Styling Studio in the dashboard made the pet
+  // window grow, which made the floating pet jump to another place.)
+  isMenuOpen = false;
 
   const { w: newW, h: newH } = getDimensions(currentScale, isMenuOpen);
   const bounds = targetWin.getBounds();
@@ -248,9 +251,29 @@ ipcMain.on('show-item-in-folder', (_, filePath) => {
   } catch (_) {}
 });
 
+// Send the mouse position to the Nooki windows so the companion's eyes can
+// follow the pointer anywhere on the screen (read only, about 12 times a second).
+let lastCursorKey = '';
+function startCursorFeed() {
+  setInterval(() => {
+    try {
+      const p = screen.getCursorScreenPoint();
+      const key = p.x + ',' + p.y;
+      if (key === lastCursorKey) return;
+      lastCursorKey = key;
+      [petWindow, mainWindow].forEach((win) => {
+        if (!win || win.isDestroyed() || !win.isVisible()) return;
+        const b = win.getContentBounds();
+        win.webContents.send('cursor-pos', p.x - b.x, p.y - b.y);
+      });
+    } catch (_) {}
+  }, 80);
+}
+
 app.whenReady().then(() => {
   createWindow();
   createPetWindow();
+  startCursorFeed();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

@@ -14,5 +14,6 @@ contextBridge.exposeInMainWorld('desktopAPI', {
   showItemInFolder: (path) => ipcRenderer.send('show-item-in-folder', path),
   setIgnoreMouseEvents: (ignore, options) => ipcRenderer.send('set-ignore-mouse-events', ignore, options),
   setPetVisible: (visible) => ipcRenderer.send('set-pet-visible', visible),
-  openMainWindow: () => ipcRenderer.send('open-main-window')
+  openMainWindow: () => ipcRenderer.send('open-main-window'),
+  onCursorPos: (cb) => ipcRenderer.on('cursor-pos', (_, x, y) => { if (typeof cb === 'function') cb(x, y); })
 });
