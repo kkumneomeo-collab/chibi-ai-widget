@@ -3,177 +3,956 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chibi on Cloud</title>
+  <title>Nooki Desktop Companion</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>☁️</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="nooki-drop-page.css">
+  <link rel="stylesheet" href="nooki-layout.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#8572eb">
 </head>
-<body class="mode-widget is-minimized">
+<body class="mode-desktop">
 
-  <!-- Main Floating Widget (Draggable & Mouse Resizable) -->
-  <div class="cloud-widget" id="cloudWidget">
+  <!-- ==========================================================================
+       1. ALL-IN-ONE DESKTOP APPLICATION SHELL
+       ========================================================================== -->
+  <div class="desktop-app-shell" id="desktopAppShell">
 
-    <!-- Speech / AI Reaction Bubble (Above Chibi's Head) -->
-    <div class="floating-bubble" id="floatingBubble">
-      <span id="bubbleText">I'm floating on my cloud! Ask me anything or type to bongo! ☁️✨</span>
+    <!-- TOP TITLEBAR & DRAG REGION -->
+    <header class="desktop-titlebar" id="desktopTitlebar">
+      <!-- Traffic Light Window Controls -->
+      <div class="titlebar-traffic-lights">
+        <button type="button" class="traffic-dot close" id="winCloseBtn" title="Close window">✕</button>
+        <button type="button" class="traffic-dot min" id="winMinBtn" title="Minimize window">─</button>
+        <button type="button" class="traffic-dot max" id="winMaxBtn" title="Maximize window">⤢</button>
+      </div>
+
+      <!-- Center Title -->
+      <div class="titlebar-center">
+        <span class="titlebar-cloud-icon">☁️</span>
+        <span class="titlebar-title-text">Nooki Desktop Companion</span>
+      </div>
+
+      <!-- Right Header Badges & Actions -->
+      <div class="titlebar-actions">
+        <!-- Close / Hide / Show Floating Pet Toggle -->
+        <button type="button" class="titlebar-pill-btn float-pill" id="headerTogglePetBtn" title="Toggle floating companion pet on screen">
+          <span>🐾</span> <span class="pill-text" id="headerTogglePetText">Hide Floating Pet</span>
+        </button>
+        <div class="titlebar-pill exp-pill" id="headerExpBadge" title="Experience Points">
+          <span>⭐</span> <span id="headerExpCount">0 XP</span>
+        </div>
+        <button type="button" class="titlebar-icon-btn" id="soundToggleBtn" title="Toggle cute poke & tap audio">
+          <span id="soundIcon">🔔</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN APP BODY: SIDEBAR + CONTENT -->
+    <div class="desktop-app-body">
+
+      <!-- LEFT SIDEBAR (FELT 3D LAVENDER PANEL MATCHING REFERENCE) -->
+      <aside class="desktop-sidebar" id="desktopSidebar">
+        <!-- Companion Profile Card -->
+        <div class="sidebar-profile">
+          <div class="sidebar-avatar" id="sidebarAvatar">
+            <span>👧</span>
+          </div>
+          <div class="sidebar-profile-info">
+            <span class="sidebar-greeting-text">Hi, Chibi! 👋</span>
+            <span class="sidebar-profile-sub">Ready to play! 🎹</span>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs (3D Clay Pills) -->
+        <nav class="sidebar-nav" id="sidebarNav">
+          <button type="button" class="sidebar-tab active" data-tab="tabDashboard">
+            <span class="sidebar-tab-icon">🏠</span>
+            <span>Dashboard</span>
+          </button>
+          <button type="button" class="sidebar-tab" data-tab="tabTasks" id="viewProductivityBtn">
+            <span class="sidebar-tab-icon">📋</span>
+            <span>Quests & Water</span>
+          </button>
+          <button type="button" class="sidebar-tab" data-tab="tabWardrobe" id="viewWardrobeBtn">
+            <span class="sidebar-tab-icon">👗</span>
+            <span>Wardrobe Studio</span>
+          </button>
+          <button type="button" class="sidebar-tab" data-tab="tabDrop" id="viewDropBtn">
+            <span class="sidebar-tab-icon">📡</span>
+            <span>Wi-Fi File Drop</span>
+          </button>
+          <button type="button" class="sidebar-tab" data-tab="tabSettings" id="menuBtn">
+            <span class="sidebar-tab-icon">⚙️</span>
+            <span>Settings & Options</span>
+          </button>
+        </nav>
+      </aside>
+
+      <!-- MAIN CONTENT VIEWPORT -->
+      <main class="desktop-content" id="desktopContent">
+
+        <!-- ==========================================
+             SCREEN 1: DASHBOARD (MATCHING REFERENCE UI)
+             ========================================== -->
+        <section class="app-screen-view active" id="tabDashboard">
+          
+          <!-- Top Greeting Bar -->
+          <div class="dash-greeting-bar">
+            <div>
+              <span class="dash-eyebrow">Companion Hub</span>
+              <h1 class="dash-title" id="dashGreetingTitle">Good Day, Chibi! ☀️</h1>
+            </div>
+            <div class="dash-quick-btns">
+              <!-- Close / Hide / Show Floating Pet Toggle -->
+              <button type="button" class="dash-pill-btn" id="dashTogglePetBtn" title="Toggle floating companion pet on screen">
+                <span>🐾</span> <span id="dashTogglePetText">Hide Floating Pet</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Hero Companion Showcase Card (Horizontal Split Layout) -->
+          <div class="dash-hero-card">
+            
+            <!-- Left Info & XP Column -->
+            <div class="hero-card-left">
+              <span class="hero-card-badge">Daily Companion</span>
+              <h2 class="hero-card-heading">Good Day, Chibi! ✨</h2>
+              <p class="hero-card-sub">Ready to keep you company & help you crush your daily tasks!</p>
+              
+              <!-- XP Progress Bar Tray -->
+              <div class="hero-exp-wrap">
+                <div class="hero-exp-labels">
+                  <span class="hero-exp-title" id="dashCompanionName">Chibi Companion</span>
+                  <span class="hero-exp-level" id="dashExpLabel">0 XP (Lv. 1)</span>
+                </div>
+                <div class="exp-bar-track">
+                  <div class="exp-bar-fill" id="dashExpBarFill" style="width: 15%;"></div>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="hero-actions-row">
+                
+                <button type="button" class="dash-hero-float-btn" id="dashHeroTogglePetBtn">🐾 Hide Floating Pet</button>
+              </div>
+            </div>
+
+            <!-- Right Stage Column: Companion Standing on Cloud -->
+            <div class="hero-card-right">
+              <!-- 3D Puffy Speech Bubble -->
+              <div class="floating-bubble dash-bubble" id="floatingBubble">
+                <span id="bubbleText">I'm floating on my cloud! Type with me! ☁️✨</span>
+              </div>
+
+              <!-- Sleeping ZZZ Indicator -->
+              <div class="sleep-indicator" id="sleepIndicator">
+                <span>z</span><span>z</span><span>z</span>
+              </div>
+
+              <!-- Particles Layer -->
+              <div class="particles-layer" id="particlesContainer"></div>
+
+              <!-- Stage: Chibi Rig Directly on Cloud Pedestal -->
+              <div class="standing-scene dash-stage" id="characterStage" title="Click Chibi to poke! Type anywhere to type with me!">
+                <div class="chibi-character-wrap" id="chibiInner">
+                  <div class="chibi-hat-layer" id="chibiHat"></div>
+                  <div class="chibi-outfit-badge" id="chibiOutfitBadge"></div>
+                  <div class="chibi-rig" id="chibiRig" title="Nooki Rig">
+                    <img src="assets/base-rig/eyerish.png" class="rig-layer layer-eyerish" id="rigIris" alt="Nooki Irises" draggable="false" />
+                    <img src="assets/base-rig/body.png" class="rig-layer layer-body" id="rigBody" alt="Nooki Body" draggable="false" />
+                    <img src="assets/base-rig/short.png" class="rig-layer layer-short" id="rigShort" alt="Nooki Shorts" draggable="false" />
+                    <img src="assets/base-rig/sport_jacket.png" class="rig-layer layer-jacket" id="rigJacket" alt="Nooki Jacket" draggable="false" />
+                    <img src="assets/base-rig/head.png" class="rig-layer layer-head" id="rigHead" alt="Nooki Head" draggable="false" />
+                    <img src="assets/base-rig/eyes_closed.png" class="rig-layer layer-eyes-closed" id="rigEyesClosed" alt="Nooki Eyes Closed" draggable="false" />
+                    <img src="assets/base-rig/hair.png" class="rig-layer layer-hair" id="rigHair" alt="Nooki Hair" draggable="false" />
+                    <img src="assets/base-rig/hand_left.png" class="rig-layer layer-hand-l" id="handLeft" alt="Nooki Left Hand" draggable="false" />
+                    <img src="assets/base-rig/hand_right.png" class="rig-layer layer-hand-r" id="handRight" alt="Nooki Right Hand" draggable="false" />
+                  </div>
+                  <div class="expression-badge" id="expressionBadge">✨</div>
+                </div>
+
+                <!-- Cloud Pedestal with Keystroke Counter -->
+                <div class="cloud-pedestal-wrap" id="cloudPedestal">
+                  <img src="assets/cloud-transparent.png" alt="Fluffy Cloud" class="cloud-img" draggable="false" />
+                  
+                  <!-- Keystroke Counter ON THE CLOUD -->
+                  <div class="keystroke-badge show" id="keystrokeBadge" title="Keystroke Counter (Tap to poke)">
+                    <span class="keystroke-icon">⌨️</span>
+                    <span class="keystroke-count" id="counterNum">0</span>
+                  </div>
+
+                  <div class="resize-handle" id="resizeHandle" style="display:none;"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 3 Quick Stats Cards Row (Responsive 3-Grid) -->
+          <div class="dash-stats-row">
+            <!-- 1. Tasks Done -->
+            <div class="dash-stat-card">
+              <div class="stat-card-top">
+                <span class="stat-icon-wrap purple">📋</span>
+                <span class="stat-val" id="dashTasksCount">0/0</span>
+              </div>
+              <span class="stat-label">Tasks Done</span>
+            </div>
+
+            <!-- 2. Hydration with Stepper (Capped at Goal) -->
+            <div class="dash-stat-card">
+              <div class="stat-card-top">
+                <span class="stat-icon-wrap blue">💧</span>
+                <span class="stat-val" id="dashWaterCount">0/8</span>
+              </div>
+              <span class="stat-label">Hydration</span>
+              <div class="stat-stepper">
+                <button type="button" class="stepper-mini-btn" id="waterSubBtn" title="Remove 1 glass">-</button>
+                <button type="button" class="stepper-mini-btn plus" id="waterAddBtn" title="Drink 1 glass">+</button>
+              </div>
+            </div>
+
+            <!-- 3. Keystrokes Typed -->
+            <div class="dash-stat-card">
+              <div class="stat-card-top">
+                <span class="stat-icon-wrap periwinkle">⌨️</span>
+                <span class="stat-val" id="dashKeyCount">0</span>
+              </div>
+              <span class="stat-label">Keystrokes Typed</span>
+              <span class="stat-sub-badge">Live typing 🐾</span>
+            </div>
+          </div>
+
+          <!-- Responsive 2x2 Grid: Quest Board, Water Well, Styling Studio, Wi-Fi File Drop -->
+          <div class="dash-four-grid">
+            
+            <!-- 1. Quest Board Card -->
+            <div class="clay-card" id="sectionTasks">
+              <div class="clay-card-header">
+                <div class="card-header-left">
+                  <span class="card-icon-pill">⚔️</span>
+                  <h2 class="card-title">Quest Board</h2>
+                </div>
+                <div class="card-header-right">
+                  <span class="tasks-count-text" id="tasksCountText">0/0 Done</span>
+                  <button type="button" class="clear-done-btn" id="dashClearDoneTasksBtn" title="Clear completed quests">🗑️ Clear Done</button>
+                  <button type="button" class="see-all-link" id="dashSeeAllTasksBtn">View All ›</button>
+                </div>
+              </div>
+
+              <!-- Quick Add Task Form -->
+              <form class="task-add-form" id="taskAddForm">
+                <input type="text" id="taskInput" placeholder="Add a new quest..." maxlength="60" autocomplete="off" />
+                <button type="submit" class="task-add-btn" id="taskAddBtn" title="Add quest">+</button>
+              </form>
+
+              <!-- Tasks List -->
+              <ul class="tasks-list" id="tasksList"></ul>
+            </div>
+
+            <!-- 2. Water Well Card -->
+            <div class="clay-card dash-water-well-card" id="dashWaterWellCard">
+              <div class="clay-card-header">
+                <div class="card-header-left">
+                  <span class="card-icon-pill">💧</span>
+                  <h2 class="card-title">Water Well</h2>
+                </div>
+                <span class="water-well-status" id="dashWaterWellStatus">0 / 2,000 ml</span>
+              </div>
+              <p class="dash-water-subtitle">Tap a 250 ml glass to drink or tap again to undo</p>
+              <div class="dash-water-glasses" id="dashWaterGlassesRow"></div>
+              <div class="dash-water-footer">
+                <span class="water-goal-badge" id="dashWaterGoalBadge">Goal: 2,000 ml (8 glasses)</span>
+                <button type="button" class="water-mini-reset-btn" id="dashWaterResetBtn" title="Reset today's water">🔄 Reset</button>
+              </div>
+            </div>
+
+            <!-- 3. Styling Studio Card (6 Outfits) -->
+            <div class="clay-card">
+              <div class="clay-card-header">
+                <div class="card-header-left">
+                  <span class="card-icon-pill">👗</span>
+                  <h2 class="card-title">Styling Studio</h2>
+                </div>
+                <button type="button" class="see-all-link" id="dashSeeAllWardrobeBtn">Open studio ›</button>
+              </div>
+              <div class="wardrobe-quick-carousel" id="dashWardrobeCarousel"></div>
+            </div>
+
+            <!-- 4. Wi-Fi File Drop Card -->
+            <div class="clay-card dash-drop-quick-card">
+              <div class="clay-card-header">
+                <div class="card-header-left">
+                  <span class="card-icon-pill">📡</span>
+                  <h2 class="card-title">Wi-Fi File Drop</h2>
+                </div>
+              </div>
+              <p class="dash-drop-desc">Fast, peer-to-peer file transfer with your phone, tablet, or another computer on the same Wi-Fi network.</p>
+              <button type="button" class="dash-open-drop-btn" id="dashOpenDropBtn">
+                <span>📡</span> Open File Drop
+              </button>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ==========================================
+             SCREEN 2: DEDICATED QUESTS & WATER
+             ========================================== -->
+        <section class="app-screen-view" id="tabTasks">
+          <div class="dash-greeting-bar">
+            <div>
+              <span class="dash-eyebrow">Productivity Center</span>
+              <h2 class="dash-title">Quests & Water</h2>
+            </div>
+            <span class="prod-xp-badge" id="prodXpBadge">⭐ 0 XP</span>
+          </div>
+
+          <!-- Card 1: Daily Quests List (Full Interactive Manager) -->
+          <div class="clay-card">
+            <div class="clay-card-header">
+              <div class="card-header-left">
+                <span class="card-icon-pill">⚔️</span>
+                <h3 class="card-title">Daily Quests</h3>
+              </div>
+              <div class="card-header-right">
+                <span class="tasks-count-text" id="fullTasksCountText">0/0 Done</span>
+                <button type="button" class="clear-done-btn" id="clearDoneTasksBtn" title="Clear completed items">🗑️ Clear Done</button>
+              </div>
+            </div>
+
+            <!-- Add Task Form in Productivity Center -->
+            <form class="task-add-form" id="fullTaskAddForm">
+              <input type="text" id="fullTaskInput" placeholder="Add a quest, task, or habit..." maxlength="70" autocomplete="off" />
+              <button type="submit" class="task-add-btn" id="fullTaskAddBtn" title="Add item">+</button>
+            </form>
+
+            <!-- Tasks List in Productivity Center -->
+            <ul class="tasks-list full-tasks-list" id="fullTasksList"></ul>
+          </div>
+
+          <!-- Card 2: Hydration Goal (2,000 ml • 8 Glasses of 250 ml) -->
+          <div class="clay-card">
+            <div class="clay-card-header">
+              <div class="card-header-left">
+                <span class="card-icon-pill">💧</span>
+                <h3 class="card-title">Hydration Well (Goal: 2,000 ml)</h3>
+              </div>
+              <span class="water-count-text" id="waterCountText">0 / 2,000 ml</span>
+            </div>
+            <p class="dash-water-subtitle" style="margin-bottom: 8px;">Each glass is 250 ml. Tap any glass to log or tap again to undo.</p>
+            <div class="water-droplets-row" id="waterDropletsRow"></div>
+            <div class="water-controls">
+              <button type="button" class="water-btn water-btn-sub" id="waterSubBtnFull" title="Remove 1 glass">- Remove Glass</button>
+              <button type="button" class="water-btn water-btn-add" id="waterAddBtnFull" title="Drink 1 glass">+ Drink Glass (250 ml) 💧</button>
+              <button type="button" class="water-btn water-btn-reset" id="waterResetBtn" title="Reset water">🔄 Reset</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             SCREEN 3: WARDROBE & STYLING STUDIO
+             ========================================== -->
+        <section class="app-screen-view" id="tabWardrobe">
+          <div class="dash-greeting-bar">
+            <div>
+              <span class="dash-eyebrow">Styling Studio</span>
+              <h2 class="dash-title">Styling Studio</h2>
+            </div>
+            <span class="wardrobe-xp-badge" id="wardrobeXpBadge">⭐ 0 XP</span>
+          </div>
+
+          <!-- Wardrobe Split Layout: Live Dressing Mirror Stage (Left) & Outfits Catalog (Right) -->
+          <div class="wardrobe-split-layout">
+            
+            <!-- LEFT COLUMN: Live Dressing Mirror & Character Showcase -->
+            <div class="clay-card wardrobe-mirror-card" id="wardrobeMirrorCard">
+              <div class="clay-card-header">
+                <div class="card-header-left">
+                  <span class="card-icon-pill">🪞</span>
+                  <h3 class="card-title">Dressing Mirror</h3>
+                </div>
+                <span class="wardrobe-live-pill">✨ Live Studio</span>
+              </div>
+
+              <!-- Dressing Stage: Chibi Rig standing on Cloud -->
+              <div class="standing-scene dash-stage" id="wardrobeCharacterStage" title="Live Dressing Mirror Stage">
+                <div class="chibi-character-wrap" id="wardrobeChibiInner">
+                  <div class="chibi-hat-layer" id="wardrobeChibiHat"></div>
+                  <div class="chibi-outfit-badge" id="wardrobeChibiOutfitBadge"></div>
+                  <div class="chibi-rig" id="wardrobeChibiRig" title="Nooki Rig">
+                    <img src="assets/base-rig/eyerish.png" class="rig-layer layer-eyerish" id="wardrobeRigIris" alt="Nooki Irises" draggable="false" />
+                    <img src="assets/base-rig/body.png" class="rig-layer layer-body" id="wardrobeRigBody" alt="Nooki Body" draggable="false" />
+                    <img src="assets/base-rig/short.png" class="rig-layer layer-short" id="wardrobeRigShort" alt="Nooki Shorts" draggable="false" />
+                    <img src="assets/base-rig/sport_jacket.png" class="rig-layer layer-jacket" id="wardrobeRigJacket" alt="Nooki Jacket" draggable="false" />
+                    <img src="assets/base-rig/head.png" class="rig-layer layer-head" id="wardrobeRigHead" alt="Nooki Head" draggable="false" />
+                    <img src="assets/base-rig/eyes_closed.png" class="rig-layer layer-eyes-closed" id="wardrobeRigEyesClosed" alt="Nooki Eyes Closed" draggable="false" />
+                    <img src="assets/base-rig/hair.png" class="rig-layer layer-hair" id="wardrobeRigHair" alt="Nooki Hair" draggable="false" />
+                    <img src="assets/base-rig/hand_left.png" class="rig-layer layer-hand-l" id="wardrobeHandLeft" alt="Nooki Left Hand" draggable="false" />
+                    <img src="assets/base-rig/hand_right.png" class="rig-layer layer-hand-r" id="wardrobeHandRight" alt="Nooki Right Hand" draggable="false" />
+                  </div>
+                  <div class="expression-badge" id="wardrobeExpressionBadge">✨</div>
+                </div>
+
+                <!-- Cloud Pedestal -->
+                <div class="cloud-pedestal-wrap" id="wardrobeCloudPedestal">
+                  <img src="assets/cloud-transparent.png" alt="Fluffy Cloud" class="cloud-img" draggable="false" />
+                </div>
+              </div>
+
+              <!-- Equipped Summary & Utility Tools Box -->
+              <div class="wardrobe-summary-box">
+                <span class="wardrobe-equipped-summary" id="wardrobeEquippedSummary">✨ Equipped: Default Outfit</span>
+                
+                <!-- Quick Styling Tools Row -->
+                <div class="wardrobe-tools-row">
+                  <button type="button" class="w-tool-btn save-btn" id="saveCurrentLookBtn" title="Save current outfit as a preset look">💾 Save Look</button>
+                  <button type="button" class="w-tool-btn random-btn" id="randomizeLookBtn" title="Shuffle surprise outfit from unlocked items">🎲 Random</button>
+                  <button type="button" class="w-tool-btn reset-btn" id="resetLookBtn" title="Reset accessories to basic outfit">🔄 Reset</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Dressing Catalog & Item Picker -->
+            <div class="clay-card wardrobe-studio-card">
+              <div class="wardrobe-studio-top">
+                <div class="wardrobe-gender-row">
+                  <span class="row-label">Character Body:</span>
+                  <div class="gender-pill-group">
+                    <button type="button" class="gender-pill-btn active" id="genderMaleBtn" data-gender="male">👦 Boy</button>
+                    <button type="button" class="gender-pill-btn" id="genderFemaleBtn" data-gender="female">👧 Girl</button>
+                  </div>
+                </div>
+                <button type="button" class="studio-save-shortcut-btn" id="studioSaveLookBtn">💾 + Save Look</button>
+              </div>
+
+              <!-- Wardrobe Navigation Tabs (Headwear, Outfits, Hair, Saved Looks) -->
+              <div class="wardrobe-tabs" id="wardrobeTabs">
+                <button type="button" class="w-tab active" data-cat="hats">🎀 Headwear</button>
+                <button type="button" class="w-tab" data-cat="outfits">🧥 Outfits</button>
+                <button type="button" class="w-tab" data-cat="hair">💇 Hair</button>
+                <button type="button" class="w-tab" data-cat="saved">💾 Saved Looks <span class="tab-count-badge" id="savedLooksCountBadge">0</span></button>
+              </div>
+
+              <!-- Filter & Search Bar -->
+              <div class="wardrobe-filter-row" id="wardrobeFilterRow">
+                <div class="filter-pill-group" id="wardrobeFilterPills">
+                  <button type="button" class="w-filter-pill active" data-filter="all">All Items</button>
+                  <button type="button" class="w-filter-pill" data-filter="unlocked">Unlocked</button>
+                  <button type="button" class="w-filter-pill" data-filter="shop">XP Shop</button>
+                </div>
+                <div class="wardrobe-search-wrap">
+                  <input type="text" id="wardrobeSearchInput" class="wardrobe-search-input" placeholder="Search styles..." maxlength="30" autocomplete="off" />
+                  <button type="button" class="search-clear-btn" id="wardrobeSearchClearBtn" style="display:none;">✕</button>
+                </div>
+              </div>
+
+              <!-- Main Grid for Catalog Items or Saved Looks -->
+              <div class="wardrobe-grid" id="wardrobeGrid"></div>
+
+              <!-- Modal / Dialog for Saving Look Name -->
+              <div class="save-look-dialog" id="saveLookDialog" style="display: none;">
+                <div class="save-look-card">
+                  <div class="save-look-header">
+                    <span class="save-look-title">💾 Save Preset Look</span>
+                    <button type="button" class="save-look-close" id="closeSaveLookDialogBtn">✕</button>
+                  </div>
+                  <div class="save-look-preview" id="saveLookPreview">
+                    <span class="preview-icons" id="saveLookPreviewIcons">🧢🥋</span>
+                    <span class="preview-desc" id="saveLookPreviewDesc">Street Cap + Varsity Bomber</span>
+                  </div>
+                  <div class="save-look-form">
+                    <label for="saveLookNameInput" class="save-look-label">Look Name:</label>
+                    <input type="text" id="saveLookNameInput" class="save-look-input" placeholder="e.g. Streetwear Vibe, Formal Chic..." maxlength="26" autocomplete="off" />
+                    <div class="save-look-actions">
+                      <button type="button" class="save-dialog-cancel" id="cancelSaveLookBtn">Cancel</button>
+                      <button type="button" class="save-dialog-confirm" id="confirmSaveLookBtn">Save Look ✨</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ==========================================
+             SCREEN 4: WI-FI FILE DROP & SHARING HUB
+             ========================================== -->
+        <section class="app-screen-view" id="tabDrop">
+          <div class="dash-greeting-bar">
+            <div>
+              <span class="dash-eyebrow">Wireless Sharing</span>
+              <h2 class="dash-title">Wi-Fi File Drop (Direct P2P)</h2>
+            </div>
+            <button type="button" class="dash-pill-btn" id="nookiOpenDownloadsBtn">
+              <span>📂 Open Downloads</span>
+            </button>
+          </div>
+
+          <div class="fd-layout">
+            <div class="clay-card fd-devices">
+              <div class="fd-card-head">
+                <h3 class="card-subheading">My Devices</h3>
+                <span class="fd-count" id="nookiDropPeerCount">0</span>
+              </div>
+              <div class="fd-peers" id="nookiDropPeersList"></div>
+              <details class="fd-add">
+                <summary class="fd-add-btn">＋ Add device</summary>
+                <div class="fd-pair">
+                  <div class="qr-box" id="nookiDropQrCode"></div>
+                  <div class="pair-instructions">
+                    <p>1. Join the <strong>same Wi-Fi</strong>.</p>
+                    <p>2. Scan the QR code, or open:</p>
+                    <div class="url-copy-box">
+                      <code id="nookiDropLocalIp">http://...</code>
+                      <button type="button" class="copy-pill-btn" id="nookiCopyIpBtn">Copy</button>
+                    </div>
+                    <p class="pin-hint">Room PIN: <strong id="nookiDropPin">------</strong></p>
+                  </div>
+                </div>
+              </details>
+            </div>
+
+            <div class="fd-zone">
+              <div class="fd-cloud" aria-hidden="true">
+                <span class="fd-cloud-emoji">☁️</span>
+                <span class="fd-spark fd-spark-a">✨</span>
+                <span class="fd-spark fd-spark-b">💜</span>
+                <span class="fd-spark fd-spark-c">⭐</span>
+              </div>
+              <h3 class="fd-zone-title">Send a file</h3>
+              <p class="fd-zone-text">Pick a device on the left, then choose a file. Any size is fine.</p>
+              <button type="button" class="fd-send-btn" id="nookiDropSelectFileBtn">📤 Choose a file</button>
+              <p class="fd-zone-note">Files stay on your Wi-Fi. Nothing goes to the internet.</p>
+            </div>
+          </div>
+
+          <div class="clay-card fd-history">
+            <div class="clay-card-header">
+              <h3 class="card-subheading">Recent File Transfers</h3>
+            </div>
+            <div class="drop-history-list" id="nookiDropHistoryList"></div>
+          </div>
+        </section>
+
+        <!-- ==========================================
+             SCREEN 5: SETTINGS & OPTIONS
+             ========================================== -->
+        <section class="app-screen-view" id="tabSettings">
+          <div class="dash-greeting-bar">
+            <div>
+              <span class="dash-eyebrow">Preferences</span>
+              <h2 class="dash-title">Settings & Customization</h2>
+            </div>
+          </div>
+
+          <!-- Responsive 6-Card Soft Grid -->
+          <div class="settings-cards-grid">
+            
+            <!-- 1. Companion Card -->
+            <div class="clay-card settings-card">
+              <div class="clay-card-header">
+                <div class="card-header-left">
+                  <span class="card-icon-pill">🐾</span>
+                  <h3 class="card-title">Companion</h3>
+                </div>
+              </div>
+
+              <!-- Switch: Show Floating Pet -->
+              <div class="settings-switch-row">
+                <div class="switch-row-info">
+                  <span class="switch-row-label">Show Floating Pet</span>
+                  <span class="switch-row-sub">Keep Chibi floating on your desktop</span>
+                </div>
+                <label class="switch-control">
+                  <input type="checkbox" id="settingsTogglePetSwitch" checked />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <!-- Slider: Companion Scale -->
+              <div class="settings-slider-group">
+                <div class="slider-group-header">
+                  <span class="switch-row-label">Companion Size</span>
+                  <span class="scale-label" id="settingsScaleLabel">1.00x</span>
+                </div>
+                <input type="range" id="sizeSlider" min="0.6" max="2.0" step="0.05" value="1.0" class="clay-slider" />
+                <div class="scale-presets-pills">
+                  <button type="button" class="scale-preset-pill" data-scale="0.75">Small (0.75x)</button>
+                  <button type="button" class="scale-preset-pill active" data-scale="1.0">Normal (1.0x)</button>
+                  <button type="button" class="scale-preset-pill" data-scale="1.25">Large (1.25x)</button>
+                  <button type="button" class="scale-preset-pill" data-scale="1.5">Giant (1.5x)</button>
+                </div>
+              </div>
+
+              <!-- Name Input -->
+              <div class="settings-input-group">
+                <label for="nameInput" class="switch-row-label">Companion Name</label>
+                <div class="settings-input-wrap">
+                  <input type="text" id="nameInput" value="Chibi" maxlength="15" class="settings-text-field" placeholder="Chibi" />
+                  <button type="button" class="settings-save-name-btn" id="saveNameBtn">Save</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2. Dashboard Card -->
+            <div class="clay-card settings-card">
+              <div class="clay-card-header">
+                <div class="card-header-left">
+                  <span class="card-icon-pill">📊</span>
+                  <h3 class="card-title">Dashboard Modules</h3>
+                </div>
+              </div>
+              <p class="settings-card-desc">Choose which cards appear on your Companion Hub dashboard:</p>
+
+              <div class="settings-switch-row">
+                <div class="switch-row-info">
+                  <span class="switch-row-label">⚔️ Quest Board</span>
+                  <span class="switch-row-sub">Quick priorities and daily tasks</span>
+                </div>
+                <label class="switch-control">
+                  <input type="checkbox" id="toggleShowTasks" checked />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <div class="settings-switch-row">
+                <div class="switch-row-info">
+                  <span class="switch-row-label">💧 Water Well</span>
+                  <span class="switch-row-sub">Interactive 250 ml hydration tracker</span>
+                </div>
+                <label class="switch-control">
+                  <input type="checkbox" id="toggleShowWater" checked />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <div class="settings-switch-row">
+                <div class="switch-row-info">
+                  <span class="switch-row-label">👗 Styling Studio</span>
+                  <span class="switch-row-sub">6 wardrobe outfits carousel</span>
+                </div>
+                <label class="switch-control">
+                  <input type="checkbox" id="toggleShowWardrobe" checked />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <div class="settings-switch-row">
+                <div class="switch-row-info">
+                  <span class="switch-row-label">📡 Wi-Fi File Drop</span>
+                  <span class="switch-row-sub">Quick file sharing card</span>
+                </div>
+                <label class="switch-control">
+                  <input type="checkbox" id="toggleShowDrop" checked />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <div class="settings-switch-row">
+                <div class="switch-row-info">
+                  <span class="switch-row-label">⌨️ Keystroke Counter</span>
+                  <span class="switch-row-sub">Show typing paw tap badge on cloud</span>
+                </div>
+                <label class="switch-control">
+                  <input type="checkbox" id="counterToggle" checked />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- 3. Sound & Reminders Card -->
+            <div class="clay-card settings-card">
+              <div class="clay-card-header">
+                <div class="card-header-left">
+                  <span class="card-icon-pill">🔔</span>
+                  <h3 class="card-title">Sound & Reminders</h3>
+                </div>
+              </div>
+
+              <div class="settings-switch-row">
+                <div class="switch-row-info">
+                  <span class="switch-row-label">Sound FX</span>
+                  <span class="switch-row-sub">Cute audio on poke, level up & tasks</span>
+                </div>
+                <label class="switch-control">
+                  <input type="checkbox" id="settingsSoundToggle" checked />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <div class="settings-slider-group">
+                <div class="slider-group-header">
+                  <span class="switch-row-label">Audio Volume</span>
+                  <span class="scale-label" id="soundVolumeLabel">80%</span>
+                </div>
+                <input type="range" id="soundVolumeSlider" min="0" max="100" step="5" value="80" class="clay-slider" />
+              </div>
+
+              <div class="settings-switch-row">
+                <div class="switch-row-info">
+                  <span class="switch-row-label">Water Reminder</span>
+                  <span class="switch-row-sub">Chibi reminds you to stay hydrated</span>
+                </div>
+                <label class="switch-control">
+                  <input type="checkbox" id="settingsWaterReminderToggle" checked />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <div class="settings-input-group">
+                <label class="switch-row-label" for="waterIntervalSelect">Reminder Interval</label>
+                <select id="waterIntervalSelect" class="settings-select-field">
+                  <option value="30">Every 30 minutes</option>
+                  <option value="45">Every 45 minutes</option>
+                  <option value="60" selected>Every 1 hour</option>
+                  <option value="120">Every 2 hours</option>
+                </select>
+              </div>
+
+              <div class="settings-switch-row">
+                <div class="switch-row-info">
+                  <span class="switch-row-label">Quiet Hours</span>
+                  <span class="switch-row-sub">Mute reminders between 10 PM - 8 AM</span>
+                </div>
+                <label class="switch-control">
+                  <input type="checkbox" id="settingsQuietHoursToggle" checked />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- 4. Daily Goals Card -->
+            <div class="clay-card settings-card">
+              <div class="clay-card-header">
+                <div class="card-header-left">
+                  <span class="card-icon-pill">🎯</span>
+                  <h3 class="card-title">Daily Goals</h3>
+                </div>
+              </div>
+
+              <div class="settings-input-group">
+                <label class="switch-row-label" for="dailyResetSelect">Daily Reset Time</label>
+                <select id="dailyResetSelect" class="settings-select-field">
+                  <option value="00:00" selected>Midnight (12:00 AM)</option>
+                  <option value="04:00">Early Morning (4:00 AM)</option>
+                  <option value="06:00">Sunrise (6:00 AM)</option>
+                </select>
+              </div>
+
+              <div class="settings-input-group">
+                <label class="switch-row-label" for="userWeightInput">Your Weight (kg)</label>
+                <input type="number" id="userWeightInput" value="65" min="30" max="250" class="settings-text-field" placeholder="65" />
+              </div>
+
+              <div class="settings-input-group">
+                <label class="switch-row-label" for="dailyWaterGoalInput">Water Goal (ml)</label>
+                <input type="number" id="dailyWaterGoalInput" value="2000" min="500" max="6000" step="250" class="settings-text-field" placeholder="2000" />
+              </div>
+
+              <div class="settings-input-group">
+                <label class="switch-row-label" for="glassSizeInput">Glass Size (ml)</label>
+                <input type="number" id="glassSizeInput" value="250" min="100" max="1000" step="50" class="settings-text-field" placeholder="250" />
+              </div>
+            </div>
+
+            <!-- 5. Trusted Devices Card -->
+            <div class="clay-card settings-card">
+              <div class="clay-card-header">
+                <div class="card-header-left">
+                  <span class="card-icon-pill">📱</span>
+                  <h3 class="card-title">Trusted Devices</h3>
+                </div>
+              </div>
+              <p class="settings-card-desc">Remembered devices paired via Wi-Fi Drop for quick transfers:</p>
+              
+              <ul class="trusted-devices-list" id="trustedDevicesList"></ul>
+            </div>
+
+            <!-- 6. App & Data Card -->
+            <div class="clay-card settings-card">
+              <div class="clay-card-header">
+                <div class="card-header-left">
+                  <span class="card-icon-pill">⚙️</span>
+                  <h3 class="card-title">App & Data</h3>
+                </div>
+              </div>
+
+              <div class="settings-switch-row">
+                <div class="switch-row-info">
+                  <span class="switch-row-label">Open at Start-up</span>
+                  <span class="switch-row-sub">Launch Nooki when your Mac boots</span>
+                </div>
+                <label class="switch-control">
+                  <input type="checkbox" id="settingsStartupToggle" />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <div class="settings-switch-row">
+                <div class="switch-row-info">
+                  <span class="switch-row-label">Always on Top</span>
+                  <span class="switch-row-sub">Keep main window above other apps</span>
+                </div>
+                <label class="switch-control">
+                  <input type="checkbox" id="settingsAlwaysOnTopToggle" />
+                  <span class="switch-slider"></span>
+                </label>
+              </div>
+
+              <div class="settings-theme-group">
+                <span class="switch-row-label">Theme Colours</span>
+                <div class="theme-pills-row">
+                  <button type="button" class="theme-color-pill active" data-color="#8572eb" style="background: #8572eb;" title="Lavender Purple"></button>
+                  <button type="button" class="theme-color-pill" data-color="#38bdf8" style="background: #38bdf8;" title="Sky Blue"></button>
+                  <button type="button" class="theme-color-pill" data-color="#ec4899" style="background: #ec4899;" title="Rose Pink"></button>
+                  <button type="button" class="theme-color-pill" data-color="#10b981" style="background: #10b981;" title="Mint Emerald"></button>
+                </div>
+              </div>
+
+              <div class="settings-backup-group">
+                <button type="button" class="settings-action-btn" id="backupDataBtn">
+                  <span>📥</span> Export Backup (JSON)
+                </button>
+                <button type="button" class="settings-action-btn" id="restoreDataBtn">
+                  <span>📤</span> Import Backup
+                </button>
+                <input type="file" id="restoreFileInput" accept=".json" style="display: none;" />
+              </div>
+
+              <div class="settings-reset-group">
+                <button type="button" class="danger-btn" id="resetAllDataBtn">
+                  ⚠️ Reset Everything
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </main>
+
+    </div><!-- /.desktop-app-body -->
+
+  </div><!-- /.desktop-app-shell -->
+
+
+  <!-- ==========================================================================
+       2. SCALABLE FLOATING SCREEN CHIBI PET WIDGET (STAYS ON SCREEN)
+       - Clean Floating Mood Bubble
+       - ⚙️ Settings / Dashboard Trigger Icon
+       - ✕ Close / Hide Floating Pet Button
+       - Live Keystroke Counter ON THE CLOUD
+       - Corner Resize Handle for smooth dragging scale
+       ========================================================================== -->
+  <aside class="floating-screen-pet" id="floatingScreenPet" title="Drag to move! Scroll mouse wheel or drag corner to resize! Type with me!">
+    
+    <!-- 3D Puffy Speech Bubble (Mood & Expressions) -->
+    <div class="floating-pet-bubble" id="floatingPetBubble">
+      <span id="floatingBubbleText">Ready to keep you company & help you crush your daily tasks! 🐾</span>
     </div>
 
-    <!-- Sleep ZZZ indicator (when idle) -->
-    <div class="sleep-indicator" id="sleepIndicator">
+    <!-- Sleep ZZZ indicator -->
+    <div class="floating-pet-sleep" id="floatingPetSleep">
       <span>z</span><span>z</span><span>z</span>
     </div>
 
-    <!-- Particles Layer (Music notes & sparkles) -->
-    <div class="particles-layer" id="particlesContainer"></div>
-
-    <!-- The Entire Scene: Chibi Standing on the Cloud (Zero Bars - Pure Fluffy Cloud) -->
-    <div class="standing-scene" id="characterStage" title="Click to poke! Scroll wheel to resize!">
-      
-      <!-- Discreet Floating Menu Trigger (Positioned neatly off the cloud) -->
-      <button class="floating-menu-trigger" id="menuBtn" title="Options & Chat" aria-label="Menu" type="button">
-        <span>☰</span>
+    <!-- Floating Action Tools (Right side: ⚙️ Dashboard + ✕ Close) -->
+    <div class="floating-pet-tools-right">
+      <button type="button" class="floating-tool-btn close-pet-btn" id="floatingPetCloseBtn" title="Close / Hide Floating Chibi">
+        ✕
       </button>
+      <button type="button" class="floating-tool-btn settings-gear" id="floatingPetSettingsBtn" title="Open Full Nooki Dashboard">
+        ⚙️
+      </button>
+    </div>
 
-      <!-- Chibi Character (Full Body Standing) -->
-      <div class="chibi-character-wrap" id="chibiInner">
-        <img id="chibiImg" src="assets/chibi-transparent.png" alt="Chibi Character" class="chibi-standing-img" draggable="false" />
-        <div class="expression-badge" id="expressionBadge">✨</div>
+    <!-- Stage: Chibi Rig standing on Cloud Pedestal -->
+    <div class="floating-pet-stage" id="floatingPetStage" title="Click to poke! Drag to move! Scroll wheel to resize!">
+      <div class="chibi-character-wrap" id="floatingChibiInner">
+        <div class="chibi-hat-layer" id="floatingChibiHat"></div>
+        <div class="chibi-outfit-badge" id="floatingChibiOutfitBadge"></div>
+        <div class="chibi-rig" id="floatingChibiRig" title="Nooki Rig">
+          <img src="assets/base-rig/eyerish.png" class="rig-layer layer-eyerish" id="floatingRigIris" alt="Nooki Irises" draggable="false" />
+          <img src="assets/base-rig/body.png" class="rig-layer layer-body" id="floatingRigBody" alt="Nooki Body" draggable="false" />
+          <img src="assets/base-rig/short.png" class="rig-layer layer-short" id="floatingRigShort" alt="Nooki Shorts" draggable="false" />
+          <img src="assets/base-rig/sport_jacket.png" class="rig-layer layer-jacket" id="floatingRigJacket" alt="Nooki Jacket" draggable="false" />
+          <img src="assets/base-rig/head.png" class="rig-layer layer-head" id="floatingRigHead" alt="Nooki Head" draggable="false" />
+          <img src="assets/base-rig/eyes_closed.png" class="rig-layer layer-eyes-closed" id="floatingRigEyesClosed" alt="Nooki Eyes Closed" draggable="false" />
+          <img src="assets/base-rig/hair.png" class="rig-layer layer-hair" id="floatingRigHair" alt="Nooki Hair" draggable="false" />
+          <img src="assets/base-rig/hand_left.png" class="rig-layer layer-hand-l" id="floatingHandLeft" alt="Nooki Left Hand" draggable="false" />
+          <img src="assets/base-rig/hand_right.png" class="rig-layer layer-hand-r" id="floatingHandRight" alt="Nooki Right Hand" draggable="false" />
+        </div>
+        <div class="expression-badge" id="floatingExpressionBadge">✨</div>
       </div>
 
-      <!-- The Real Fluffy Cloud Pedestal (Pure cloud, no bar, Chibi stands right on it) -->
-      <div class="cloud-pedestal-wrap" id="cloudPedestal">
+      <!-- Cloud Pedestal with Keystroke Counter ON THE CLOUD & Resize Handle -->
+      <div class="cloud-pedestal-wrap" id="floatingCloudPedestal">
         <img src="assets/cloud-transparent.png" alt="Fluffy Cloud" class="cloud-img" draggable="false" />
-
-        <!-- Corner Resize Handle (Only visible on hover) -->
-        <div class="resize-handle" id="resizeHandle" title="Drag with mouse to resize">
-          <span>⤡</span>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Popover Menu / Options (Opens when ☰ is clicked) -->
-    <div class="popover-menu" id="popoverMenu">
-      <div class="popover-header">
-        <span class="popover-title">☁️ Chibi on Cloud</span>
-        <button class="close-popover" id="closeMenuBtn" type="button">✕</button>
-      </div>
-
-      <!-- Mouse Controlled Size Slider -->
-      <div class="menu-row slider-row">
-        <span class="row-label">Size:</span>
-        <input type="range" id="sizeSlider" min="0.5" max="2.2" step="0.05" value="1.0" class="mini-slider" />
-        <span class="scale-label" id="scaleLabel">1.0x</span>
-      </div>
-
-      <!-- Keystroke Counter Toggle (Checkbox Tick - unchecked by default) -->
-      <div class="menu-row checkbox-row">
-        <label class="checkbox-label" for="counterToggle">
-          <input type="checkbox" id="counterToggle" />
-          <span class="custom-checkbox"></span>
-          <span class="checkbox-text">Show Keystroke Counter</span>
-        </label>
-      </div>
-
-      <!-- Name Edit Row -->
-      <div class="menu-row name-row">
-        <span class="row-label">Name:</span>
-        <input type="text" id="nameInput" value="Chibi" maxlength="15" class="mini-name-input" placeholder="Companion name" />
-      </div>
-
-      <!-- Quick Action Buttons -->
-      <div class="menu-row buttons-row">
-        <button class="action-btn" id="soundToggleBtn">
-          <span id="soundIcon">🔔</span> Sound
-        </button>
-        <button class="action-btn" id="viewFullChatBtn" title="View complete chat history">
-          💬 Full Chat
-        </button>
-        <button class="action-btn" id="resetCountBtn" style="display: none;">
-          🔄 Reset
-        </button>
-      </div>
-
-      <!-- Quick Ask Input in Popover -->
-      <div class="menu-chat-section">
-        <!-- Live Thinking Indicator Inside Menu -->
-        <div class="mini-chat-thinking" id="miniChatThinking">
-          <span class="typing-dot"></span>
-          <span class="typing-dot"></span>
-          <span class="typing-dot"></span>
-          <span>Chibi is thinking... 💭</span>
+        
+        <!-- Keystroke Counter on Floating Cloud (Always Visible & Synced) -->
+        <div class="keystroke-badge show" id="floatingKeystrokeBadge" title="Keystroke Counter (Tap to poke)">
+          <span class="keystroke-icon">⌨️</span>
+          <span class="keystroke-count" id="floatingCounterNum">0</span>
         </div>
 
-        <form class="mini-chat-form" id="chatForm">
-          <input 
-            type="text" 
-            id="chatInput" 
-            placeholder="Ask Chibi anything..." 
-            autocomplete="off" 
-            maxlength="200" 
-          />
-          <button type="submit" class="mini-send-btn" id="sendBtn">🚀</button>
-        </form>
-
-        <!-- Quick AI Prompt Chips -->
-        <div class="mini-chips">
-          <button type="button" class="mini-chip" data-q="Tell me a joke! 😆">😆 Joke</button>
-          <button type="button" class="mini-chip" data-q="Inspire me! 💖">💖 Inspire</button>
-          <button type="button" class="mini-chip" data-q="Who are you? ☁️">☁️ Who are you?</button>
-        </div>
+        <!-- Corner Resize Handle for Scaling Floating Chibi -->
+        <div class="resize-handle" id="floatingResizeHandle" title="Drag corner to scale Chibi"></div>
       </div>
     </div>
 
-    <!-- Expandable Full Chat Drawer (User can view all past chats & chat more!) -->
-    <div class="full-chat-drawer" id="fullChatDrawer">
-      <div class="full-chat-header">
-        <div class="header-left">
-          <span class="full-chat-title">☁️ Conversation History</span>
-          <span class="chat-badge" id="chatBadge">1 msg</span>
-        </div>
-        <div class="header-right">
-          <button class="chat-icon-btn" id="clearFullChatBtn" title="Clear Chat History">🗑️</button>
-          <button class="chat-icon-btn close-chat-btn" id="closeFullChatBtn" title="Minimize Chat">✕</button>
-        </div>
-      </div>
+  </aside>
 
-      <!-- Scrollable Message List (View Chat More) -->
-      <div class="full-messages-list" id="fullMessagesList">
-        <div class="msg-row chibi-msg">
-          <div class="avatar-dot"><img src="assets/chibi-transparent.png" alt="Chibi" /></div>
-          <div class="msg-bubble">
-            <span class="msg-sender">Chibi</span>
-            <div class="msg-content">Hello friend! 🐾 I'm floating on my cloud with zero limits and no keys needed! Ask me anything! ✨</div>
-            <span class="msg-time">Just now</span>
-          </div>
-        </div>
-      </div>
+  <!-- Hidden File Input for Any File Type -->
+  <input type="file" id="nookiDropFileInput" style="display:none" multiple />
 
-      <!-- Quick Chips in Full Chat -->
-      <div class="full-chat-chips" id="fullChatChips">
-        <button type="button" class="f-chip" data-q="Tell me a fun random fact! 🌟">🌟 Fact</button>
-        <button type="button" class="f-chip" data-q="Tell me a clever riddle! 🧩">🧩 Riddle</button>
-        <button type="button" class="f-chip" data-q="What is the speed of light? ⚡">⚡ Speed of light</button>
-        <button type="button" class="f-chip" data-q="What is 15 + 27? 🔢">🔢 Math</button>
+  <!-- Wi-Fi Drop Incoming File Prompt Modal -->
+  <div class="nooki-incoming-modal" id="nookiIncomingModal">
+    <div class="incoming-card">
+      <div class="incoming-icon">📦</div>
+      <h3 id="nookiIncomingTitle">Incoming File</h3>
+      <p id="nookiIncomingDesc">A device is sharing a file with you.</p>
+      <div class="incoming-actions">
+        <button type="button" class="incoming-btn accept" id="nookiIncomingAccept">📥 Download & Save</button>
+        <button type="button" class="incoming-btn decline" id="nookiIncomingDecline">Decline</button>
       </div>
-
-      <!-- Chat Input Form in Full Chat -->
-      <form class="full-chat-input-bar" id="fullChatForm">
-        <input 
-          type="text" 
-          id="fullChatInput" 
-          placeholder="Ask Chibi anything..." 
-          autocomplete="off" 
-          maxlength="500" 
-        />
-        <button type="submit" class="full-send-btn" id="fullSendBtn" aria-label="Send">🚀</button>
-      </form>
     </div>
-
   </div>
 
+  <!-- Wi-Fi Drop Transfer HUD Progress Float -->
+  <div class="nooki-transfer-hud" id="nookiTransferHUD">
+    <div class="hud-card">
+      <div class="hud-header">
+        <span class="hud-icon">⚡</span>
+        <div class="hud-meta">
+          <span class="hud-filename" id="hudFileName">Sending file...</span>
+          <span class="hud-status" id="hudPercentText">0%</span>
+        </div>
+      </div>
+      <div class="hud-progress-track">
+        <div class="hud-progress-fill" id="hudProgressFill" style="width: 0%;"></div>
+      </div>
+      <div class="hud-stats">
+        <span id="hudSpeedText">0 KB/s</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legacy Hidden Drawer Placeholders (Prevents any null-ref in old scripts) -->
+  <div id="cloudWidget" style="display:none;"></div>
+  <div id="popoverMenu" style="display:none;"><button id="closeMenuBtn"></button></div>
+  <div id="productivityDrawer" style="display:none;"><button id="closeProdBtn"></button></div>
+  <div id="wardrobeDrawer" style="display:none;"><button id="closeWardrobeBtn"></button></div>
+  <div id="nookiDropDrawer" style="display:none;"><button id="closeDropDrawerBtn"></button></div>
+
   <script src="script.js"></script>
+  <script src="nooki-drop.js"></script>
 </body>
 </html>
