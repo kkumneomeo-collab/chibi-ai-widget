@@ -1,0 +1,666 @@
+/* ============================================================
+   NOOKI STYLING STUDIO THEME (new file — no existing file changed)
+   - Hides the old wardrobe layout inside #tabWardrobe (elements
+     stay in the DOM; existing JS keeps working untouched).
+   - Styles the new Studio (character select + character detail),
+     the What's New card in Settings, and a light-touch app theme.
+   - Light-touch theme rules change ONLY background / box-shadow /
+     border-color on broad selectors — never layout properties.
+   - Unified visual system: the Studio uses the same header
+     (eyebrow pill + navy Nunito title), text colours, shell
+     gradient and glass cards as Dashboard / Settings — see
+     nooki-app-theme.css for the shared standard.
+   ============================================================ */
+
+/* ---------- Light-touch app ambience (visual only) ---------- */
+.desktop-app-shell {
+  background: linear-gradient(135deg, #f6c9de 0%, #d9c8f5 34%, #bcd7fb 68%, #a8cdf7 100%);
+}
+.desktop-sidebar {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(214, 205, 250, 0.45));
+  box-shadow: 6px 0 24px rgba(90, 80, 180, 0.10);
+}
+.clay-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(214, 205, 250, 0.45));
+  border-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 26px rgba(90, 110, 200, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+/* ---------- Old wardrobe UI hidden (DOM untouched) ---------- */
+#tabWardrobe > .dash-greeting-bar,
+#tabWardrobe > .wardrobe-split-layout {
+  display: none !important;
+}
+
+/* ---------- Studio shared ---------- */
+#tabWardrobe .ns-studio {
+  font-family: inherit;
+  color: #2c3a63;
+  min-height: 100%;
+  box-sizing: border-box;
+  /* No backdrop of its own: the shared shell gradient from
+     nooki-app-theme.css shows through, like every other screen. */
+  background: transparent;
+  border-radius: 18px;
+  padding: 14px 16px 16px;
+  position: relative;
+  overflow: hidden;
+}
+#tabWardrobe .ns-studio > .ns-view { position: relative; z-index: 1; }
+#tabWardrobe .ns-hide { display: none !important; }
+#tabWardrobe .ns-studio button { font-family: inherit; cursor: pointer; }
+
+/* Top bar: standard screen header (eyebrow pill + title, same as
+   Dashboard / Settings) + pill counters. The markup has the title
+   span first and the eyebrow span second, so the block stacks in
+   reverse to put the eyebrow pill above the title. */
+#tabWardrobe .ns-topbar {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+#tabWardrobe .ns-title-block {
+  padding: 2px 0;
+  display: flex; flex-direction: column-reverse; line-height: 1.05; gap: 5px;
+}
+#tabWardrobe .ns-title-block-main { font-weight: 900; font-size: 24px; color: #24365f; }
+#tabWardrobe .ns-title-block-sub {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 999px;
+  padding: 4px 11px;
+  font-size: 10px; font-weight: 900; letter-spacing: 1.6px; color: #2f7fd0;
+  box-shadow: 0 3px 10px rgba(90, 110, 200, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#tabWardrobe .ns-counters { display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+#tabWardrobe .ns-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 999px; padding: 5px 8px 5px 10px;
+  font-weight: 800; font-size: 13px; color: #33477a;
+  box-shadow: 0 4px 12px rgba(90, 110, 200, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+#tabWardrobe .ns-pill-ico {
+  width: 20px; height: 20px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; color: #fff; flex: none;
+}
+#tabWardrobe .ns-ico-star { background: radial-gradient(circle at 35% 30%, #ffe37a, #f5b921); }
+#tabWardrobe .ns-ico-heart { background: radial-gradient(circle at 35% 30%, #ffb3cd, #f06ba8); }
+#tabWardrobe .ns-ico-gem { background: radial-gradient(circle at 35% 30%, #a5e8ff, #38a8e8); }
+#tabWardrobe .ns-plus {
+  background: #ffd94d; color: #7a5b00; border-radius: 5px;
+  width: 17px; height: 17px; display: inline-flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900; box-shadow: 0 2px 5px rgba(240, 180, 30, 0.4);
+}
+
+#tabWardrobe .ns-heading {
+  font-size: 30px; font-weight: 900; color: #24365f; margin: 8px 0 2px; text-align: center;
+}
+#tabWardrobe .ns-sub {
+  text-align: center; color: #5a6c9c; font-weight: 700; font-size: 13px; margin: 0 0 14px;
+}
+
+/* ---------- View 1: character cards ---------- */
+#tabWardrobe .ns-cards {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+}
+#tabWardrobe .ns-card {
+  position: relative; border: 1px solid rgba(255, 255, 255, 0.9); text-align: left;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(214, 205, 250, 0.45));
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border-radius: 18px; padding: 0; overflow: visible;
+  box-shadow: 0 10px 26px rgba(90, 110, 200, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  display: flex; flex-direction: column;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+#tabWardrobe .ns-card-main:hover { transform: translateY(-3px); box-shadow: 0 16px 34px rgba(90, 110, 200, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.95); }
+#tabWardrobe .ns-card-tag {
+  position: absolute; top: 0; left: 0; z-index: 4;
+  font-size: 9px; font-weight: 900; letter-spacing: 1px; color: #fff;
+  padding: 4px 12px 4px 8px; clip-path: polygon(0 0, 100% 0, 0 100%);
+  width: 74px; height: 30px; box-sizing: border-box;
+}
+#tabWardrobe .ns-tag-selected { background: linear-gradient(120deg, #ffc93c, #ff9d2e); }
+#tabWardrobe .ns-tag-locked { background: linear-gradient(120deg, #f26d6d, #d63d4e); }
+#tabWardrobe .ns-card-art {
+  position: relative; display: block; height: 218px; border-radius: 18px 18px 0 0; overflow: hidden;
+  background-color: rgba(235, 244, 255, 0.75);
+  background-image:
+    linear-gradient(45deg, rgba(150, 185, 240, 0.16) 25%, transparent 25%, transparent 75%, rgba(150, 185, 240, 0.16) 75%),
+    linear-gradient(45deg, rgba(150, 185, 240, 0.16) 25%, transparent 25%, transparent 75%, rgba(150, 185, 240, 0.16) 75%);
+  background-size: 26px 26px; background-position: 0 0, 13px 13px;
+}
+#tabWardrobe .ns-card-art img {
+  position: absolute; inset: 0; margin: auto; height: 100%; max-width: 100%;
+  object-fit: contain; filter: drop-shadow(0 8px 10px rgba(60, 80, 160, 0.25));
+}
+#tabWardrobe .ns-card-namebar {
+  position: relative; display: flex; align-items: center;
+  background: rgba(255, 255, 255, 0.65);
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  transform: skewX(-8deg); margin: -12px 10px 0; padding: 7px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 6px;
+  box-shadow: 0 5px 14px rgba(90, 110, 200, 0.20), inset 0 1px 0 rgba(255,255,255,0.95);
+  z-index: 3;
+}
+#tabWardrobe .ns-card-name { transform: skewX(8deg); font-weight: 900; font-size: 15px; color: #2c3a63; }
+#tabWardrobe .ns-name-stripes { margin-left: auto; display: inline-flex; gap: 3px; }
+#tabWardrobe .ns-name-stripes i { width: 5px; height: 16px; background: #8fb4ec; transform: skewX(-14deg); display: block; }
+#tabWardrobe .ns-card-strip {
+  display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(90deg, #2c3a63, #40548c);
+  color: #dbe7ff; font-weight: 800; font-size: 12.5px;
+  padding: 8px 12px; border-radius: 0 0 18px 18px; margin-top: 10px;
+}
+
+/* Locked future cards — dummy mystery character scenes.
+   Layers: tinted gradient scene → halo + pedestal glow → silhouette
+   → sparkles → lock badge. Real future art replaces the silhouette. */
+#tabWardrobe .ns-card-locked { cursor: pointer; }
+#tabWardrobe .ns-card-locked .ns-card-art::after {
+  /* chain-link diagonal overlay, softened over the scene backdrop */
+  content: ""; position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(45deg, transparent 0 16px, rgba(70, 90, 140, 0.10) 16px 18px),
+    repeating-linear-gradient(-45deg, transparent 0 16px, rgba(70, 90, 140, 0.10) 16px 18px);
+}
+/* Dreamy scene backdrops — one pastel hue per locked card */
+#tabWardrobe .ns-art-mystery.ns-hue-rose {
+  --ns-glow: rgba(240, 107, 168, 0.55); --ns-glow-soft: rgba(255, 170, 205, 0.55);
+  background: linear-gradient(180deg, #ffe7f3 0%, #ffc9e0 48%, #f79ec4 100%);
+}
+#tabWardrobe .ns-art-mystery.ns-hue-lav {
+  --ns-glow: rgba(141, 118, 232, 0.55); --ns-glow-soft: rgba(198, 180, 255, 0.55);
+  background: linear-gradient(180deg, #efe9ff 0%, #d6c6ff 48%, #ab90ec 100%);
+}
+#tabWardrobe .ns-art-mystery.ns-hue-mint {
+  --ns-glow: rgba(34, 172, 144, 0.5); --ns-glow-soft: rgba(150, 235, 210, 0.6);
+  background: linear-gradient(180deg, #e3fbf3 0%, #b9efdb 48%, #77d3b4 100%);
+}
+/* Glowing halo ring behind the figure */
+#tabWardrobe .ns-halo {
+  position: absolute; z-index: 1; left: 50%; top: 14px; transform: translateX(-50%);
+  width: 158px; height: 158px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, var(--ns-glow-soft, rgba(190, 170, 255, 0.5)) 46%, rgba(255, 255, 255, 0) 70%);
+}
+#tabWardrobe .ns-halo::after {
+  content: ""; position: absolute; inset: 16px; border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+/* Soft pedestal shadow the silhouette stands on */
+#tabWardrobe .ns-pedestal {
+  position: absolute; z-index: 1; left: 50%; bottom: 10px; transform: translateX(-50%);
+  width: 128px; height: 24px; border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(43, 34, 96, 0.38) 0%, rgba(43, 34, 96, 0) 62%);
+  box-shadow: 0 0 26px 8px var(--ns-glow-soft, rgba(190, 170, 255, 0.5));
+}
+/* Mystery silhouette — the character rig darkened (imgs keep the
+   body → eyerish → head order from the markup) */
+#tabWardrobe .ns-silhouette {
+  position: absolute; inset: 0; z-index: 2; opacity: 0.62;
+  filter: drop-shadow(0 0 16px var(--ns-glow, rgba(141, 118, 232, 0.55)));
+}
+#tabWardrobe .ns-silhouette.ns-flip { transform: scaleX(-1); }
+#tabWardrobe .ns-silhouette img { height: 94%; filter: brightness(0); }
+/* Sparkles over the scene */
+#tabWardrobe .ns-sparkles { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+#tabWardrobe .ns-sparkles i {
+  position: absolute; font-style: normal; color: #fff;
+  text-shadow: 0 0 8px var(--ns-glow, rgba(141, 118, 232, 0.6)), 0 0 3px rgba(255, 255, 255, 0.9);
+  animation: nsTwinkle 2.8s ease-in-out infinite alternate;
+}
+#tabWardrobe .ns-sparkles .sp1 { top: 15%; left: 13%; font-size: 15px; opacity: 0.8; }
+#tabWardrobe .ns-sparkles .sp2 { top: 9%; right: 15%; font-size: 11px; opacity: 0.6; animation-delay: 0.7s; }
+#tabWardrobe .ns-sparkles .sp3 { top: 44%; left: 7%; font-size: 10px; opacity: 0.55; animation-delay: 1.3s; }
+#tabWardrobe .ns-sparkles .sp4 { top: 36%; right: 8%; font-size: 14px; opacity: 0.75; animation-delay: 0.4s; }
+#tabWardrobe .ns-sparkles .sp5 { bottom: 16%; left: 24%; font-size: 9px; opacity: 0.5; animation-delay: 1.8s; }
+@keyframes nsTwinkle { from { transform: scale(0.72); opacity: 0.35; } to { transform: scale(1.12); } }
+/* Glossy lock badge in the art area's top corner */
+#tabWardrobe .ns-card-locked .ns-lock-badge {
+  left: auto; right: 12px; top: 12px; transform: none; z-index: 4;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(216, 230, 255, 0.78));
+  box-shadow: 0 5px 12px rgba(70, 90, 160, 0.3), inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+#tabWardrobe .ns-qmark {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 84px; font-weight: 900; color: rgba(70, 92, 150, 0.4);
+}
+#tabWardrobe .ns-lock-badge {
+  position: absolute; left: 50%; top: 56%; transform: translate(-50%, 0); z-index: 2;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+  box-shadow: 0 4px 10px rgba(70, 90, 160, 0.25);
+}
+#tabWardrobe .ns-lock-info {
+  display: block; margin: 12px 10px 0; padding: 9px 11px; border-radius: 8px;
+  background: linear-gradient(120deg, rgba(44, 58, 99, 0.92), rgba(64, 84, 140, 0.92));
+  color: #ffe37a; position: relative; z-index: 3;
+}
+#tabWardrobe .ns-lock-title { display: block; font-weight: 900; font-size: 13px; text-align: center; }
+#tabWardrobe .ns-bar {
+  display: block; height: 7px; border-radius: 99px; overflow: hidden;
+  background: rgba(120, 155, 220, 0.35); box-shadow: inset 0 1px 2px rgba(20, 30, 70, 0.25);
+}
+#tabWardrobe .ns-lock-info .ns-bar { margin: 7px 0 5px; background: rgba(255, 255, 255, 0.22); }
+#tabWardrobe .ns-bar-fill {
+  display: block; height: 100%; border-radius: 99px;
+  background: linear-gradient(90deg, #57b6f2, #38a8e8);
+  box-shadow: 0 0 8px rgba(87, 182, 242, 0.7);
+  transition: width 0.3s ease;
+}
+#tabWardrobe .ns-lock-sub { display: block; text-align: center; font-size: 11px; font-weight: 800; color: #cfe0ff; }
+#tabWardrobe .ns-card-locked .ns-card-namebar { background: rgba(210, 222, 245, 0.6); }
+@keyframes nsShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+#tabWardrobe .ns-shake { animation: nsShake 0.32s ease 2; }
+
+/* Bottom note strip (View 1) */
+#tabWardrobe .ns-note-strip {
+  margin-top: 16px; display: flex; gap: 10px; align-items: flex-start;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(214, 205, 250, 0.45));
+  padding: 10px 34px 10px 12px;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 18px) 100%, 0 100%);
+}
+#tabWardrobe .ns-note-diamond { color: #2f7fd0; font-size: 13px; margin-top: 2px; }
+#tabWardrobe .ns-note-strip p { margin: 0; font-size: 12px; font-weight: 700; color: #48649e; line-height: 1.45; }
+
+/* ---------- View 2: character detail ---------- */
+#tabWardrobe .ns-back-btn, #tabWardrobe .ns-slant-btn {
+  border: none; color: #fff; font-weight: 900; font-size: 13.5px;
+  background: linear-gradient(120deg, #57b6f2, #2f7fd0);
+  padding: 9px 18px; transform: skewX(-8deg); border-radius: 6px;
+  box-shadow: 0 5px 14px rgba(47, 127, 208, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+#tabWardrobe .ns-main-title {
+  font-size: 28px; font-weight: 900; margin: 4px 0 10px;
+  color: #24365f; letter-spacing: 0.2px; position: relative; display: inline-block;
+}
+#tabWardrobe .ns-main-title::after {
+  content: ""; position: absolute; left: 2px; bottom: -6px; width: 100px;
+  border-bottom: 3px dotted #5a6c9c;
+}
+#tabWardrobe .ns-mt-num { color: #f5b921; }
+/* Title is the character name only: the number/word spans stay empty and hidden */
+#tabWardrobe #nsTitleNum:empty, #tabWardrobe #nsTitleWord:empty { display: none; }
+#tabWardrobe .ns-mt-bars { display: inline-flex; gap: 4px; margin-left: 10px; vertical-align: middle; }
+#tabWardrobe .ns-mt-bars i { width: 7px; height: 23px; background: #24365f; transform: skewX(-14deg); display: block; }
+#tabWardrobe .ns-title-row { position: relative; }
+#tabWardrobe .ns-x-btn {
+  position: absolute; right: 2px; top: 0; border: none; background: none;
+  color: #24365f; font-size: 27px; font-weight: 900; line-height: 1; padding: 4px;
+}
+#tabWardrobe .ns-x-btn:hover { transform: scale(1.12); }
+
+#tabWardrobe .ns-detail-body { display: flex; gap: 10px; align-items: stretch; }
+
+/* Hexagon side menu */
+#tabWardrobe .ns-menu { display: flex; flex-direction: column; gap: 16px; padding-top: 26px; flex: none; width: 88px; align-items: center; }
+#tabWardrobe .ns-menu-btn { border: none; background: none; padding: 0; display: flex; flex-direction: column; align-items: center; }
+#tabWardrobe .ns-menu-hex {
+  width: 76px; height: 66px; display: flex; align-items: center; justify-content: center;
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  background: linear-gradient(160deg, #7cc0f7, #3d8bd8);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.55);
+  transition: transform 0.15s ease;
+}
+#tabWardrobe .ns-menu-btn:hover .ns-menu-hex { transform: scale(1.06); }
+#tabWardrobe .ns-menu-btn.active .ns-menu-hex { background: linear-gradient(160deg, #ffe37a, #ffc93c); }
+#tabWardrobe .ns-menu-ico { font-size: 21px; }
+#tabWardrobe .ns-menu-label {
+  margin-top: -9px; position: relative; z-index: 2;
+  background: rgba(255, 255, 255, 0.55); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 999px;
+  padding: 3px 12px; font-size: 12px; font-weight: 900; color: #2c3a63;
+  box-shadow: 0 4px 12px rgba(90, 110, 200, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#tabWardrobe .ns-menu-btn.active .ns-menu-label { background: rgba(255, 227, 122, 0.75); box-shadow: 0 4px 14px rgba(240, 180, 30, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.95); }
+
+/* Shared glass sheet — same glass card as the Dashboard cards */
+#tabWardrobe .ns-sheet {
+  position: relative; flex: 1; min-height: 478px; border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(214, 205, 250, 0.45));
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 26px rgba(90, 110, 200, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  overflow: hidden;
+}
+#tabWardrobe .ns-bg-fx { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
+#tabWardrobe .ns-spark { position: absolute; font-style: normal; color: rgba(255, 255, 255, 0.85); text-shadow: 0 0 8px rgba(255, 255, 255, 0.9); font-size: 13px; }
+#tabWardrobe .ns-spark.s1 { left: 34%; top: 12%; }
+#tabWardrobe .ns-spark.s2 { left: 62%; top: 30%; font-size: 10px; }
+#tabWardrobe .ns-spark.s3 { left: 84%; top: 9%; }
+#tabWardrobe .ns-spark.s4 { left: 48%; top: 58%; font-size: 10px; }
+
+/* Character column — same spot on all three tabs */
+#tabWardrobe .ns-char-col {
+  position: absolute; left: -14px; top: 44px; width: 252px; z-index: 3;
+  display: flex; flex-direction: column; align-items: center; pointer-events: none;
+}
+#tabWardrobe .ns-char-img {
+  width: 236px; max-width: 100%; display: block;
+  filter: drop-shadow(0 10px 14px rgba(50, 75, 150, 0.28));
+}
+#tabWardrobe .ns-char-rig {
+  position: relative; width: 236px; max-width: 100%; aspect-ratio: 1 / 1; display: block;
+  filter: drop-shadow(0 10px 14px rgba(50, 75, 150, 0.28));
+}
+#tabWardrobe .ns-char-rig img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: contain; pointer-events: none;
+}
+#tabWardrobe .ns-char-shadow {
+  width: 150px; height: 22px; margin-top: -14px; border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(35, 55, 115, 0.4), transparent 68%);
+}
+#tabWardrobe .ns-char-under { display: none; margin-top: 8px; flex-direction: column; align-items: center; gap: 6px; }
+#tabWardrobe .ns-sheet.tab-details .ns-char-under { display: flex; }
+#tabWardrobe .ns-under-stars { font-size: 15px; letter-spacing: 2px; color: rgba(255, 255, 255, 0.45); }
+#tabWardrobe .ns-under-stars .lit { color: #ffd94d; text-shadow: 0 0 8px rgba(255, 200, 40, 0.8); }
+#tabWardrobe .ns-under-slots { display: flex; gap: 5px; }
+#tabWardrobe .ns-slot {
+  background: rgba(255, 255, 255, 0.5); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.85); border-radius: 7px;
+  font-size: 10.5px; font-weight: 900; color: #2c3a63; padding: 3px 8px;
+  box-shadow: 0 3px 8px rgba(90, 110, 200, 0.18);
+}
+
+/* Panes sit right of the character */
+#tabWardrobe .ns-pane { position: relative; z-index: 2; margin-left: 238px; padding: 16px 18px 16px 6px; }
+#tabWardrobe .ns-pane-animations { padding-bottom: 108px; }
+
+/* Details / Story hero panel */
+#tabWardrobe .ns-hero-panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(214, 205, 250, 0.45));
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 18px;
+  padding: 16px 18px; box-shadow: 0 10px 26px rgba(90, 110, 200, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#tabWardrobe .ns-hero-head { display: flex; align-items: baseline; gap: 12px; }
+#tabWardrobe .ns-hero-name { margin: 0; font-size: 24px; font-weight: 900; color: #2c3a63; }
+#tabWardrobe .ns-hero-lv { font-weight: 900; color: #2f7fd0; font-size: 15px; }
+#tabWardrobe .ns-hero-tags { display: flex; gap: 7px; margin: 9px 0 12px; flex-wrap: wrap; }
+#tabWardrobe .ns-glass-tag {
+  background: rgba(255, 255, 255, 0.55); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 999px; padding: 4px 12px;
+  font-size: 11.5px; font-weight: 900; color: #2c3a63;
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#tabWardrobe .ns-hero-facts { display: flex; gap: 22px; flex-wrap: wrap; margin-bottom: 12px; }
+#tabWardrobe .ns-fact { display: flex; flex-direction: column; }
+#tabWardrobe .ns-fact-k { font-size: 10.5px; font-weight: 900; letter-spacing: 1px; color: #7d92c2; text-transform: uppercase; }
+#tabWardrobe .ns-fact-v { font-weight: 900; color: #2c3a63; font-size: 14.5px; }
+#tabWardrobe .ns-stat { margin-bottom: 10px; }
+#tabWardrobe .ns-stat-head { display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: #48649e; margin-bottom: 4px; }
+#tabWardrobe .ns-hero-desc, #tabWardrobe .ns-story-text { font-size: 13.5px; font-weight: 700; color: #48649e; line-height: 1.55; margin: 10px 0 0; }
+#tabWardrobe .ns-hero-stars-row { display: flex; align-items: center; gap: 10px; margin-top: 13px; }
+#tabWardrobe .ns-hero-stars-label { font-size: 11px; font-weight: 900; letter-spacing: 0.6px; color: #7d92c2; text-transform: uppercase; }
+#tabWardrobe .ns-hero-stars { font-size: 17px; letter-spacing: 2px; color: rgba(120, 145, 200, 0.4); }
+#tabWardrobe .ns-hero-stars .lit { color: #ffd94d; text-shadow: 0 0 8px rgba(255, 200, 40, 0.8); }
+
+/* ---------- Animations tab: chevron bar ---------- */
+#tabWardrobe .ns-chevron-bar {
+  display: flex; align-items: center; gap: 12px;
+  background: linear-gradient(90deg, rgba(64, 195, 235, 0.75), rgba(56, 168, 232, 0.55));
+  transform: skewX(-6deg); border-radius: 5px;
+  padding: 8px 14px; margin-bottom: 20px;
+  box-shadow: 0 6px 16px rgba(40, 130, 200, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+#tabWardrobe .ns-chev-logo { color: #24365f; font-weight: 900; font-size: 19px; }
+#tabWardrobe .ns-chev-label {
+  font-size: 21px; font-weight: 900; white-space: nowrap; color: #24365f;
+}
+#tabWardrobe .ns-chev-row {
+  color: #ffd94d; font-size: 19px; font-weight: 900; letter-spacing: 1px;
+  overflow: hidden; white-space: nowrap; flex: 1;
+  text-shadow: 0 2px 5px rgba(190, 140, 0, 0.4);
+}
+#tabWardrobe .ns-chev-q {
+  flex: none; width: 27px; height: 27px; transform: rotate(45deg);
+  background: rgba(255, 255, 255, 0.5); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; color: #24365f; font-size: 14px;
+  box-shadow: 0 4px 10px rgba(90, 140, 220, 0.4);
+}
+#tabWardrobe .ns-chev-q::first-letter { transform: rotate(-45deg); }
+
+/* ---------- Animations tab: hexagon honeycomb ---------- */
+/* Tiles at ~77% of their original size (frame 152x132 -> 118x102).
+   The rows are centred in the pane by the grid, then shifted by half
+   the honeycomb stagger each way (stagger = (118 + 16) / 2 = 67px),
+   so the staggered footprint as a whole has even left/right margins
+   instead of sitting against the left edge. */
+#tabWardrobe .ns-hex-grid { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+#tabWardrobe .ns-hex-row { display: flex; gap: 16px; }
+#tabWardrobe .ns-hex-row.row-1 { transform: translateX(-33.5px); }
+#tabWardrobe .ns-hex-row.row-2 { transform: translateX(33.5px); }
+#tabWardrobe .ns-hex-cell { position: relative; display: flex; flex-direction: column; align-items: center; width: 118px; }
+#tabWardrobe .ns-hex-cell::before, #tabWardrobe .ns-hex-cell::after {
+  /* corner notches */
+  content: ""; position: absolute; top: 2px; width: 8px; height: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.85); transform: rotate(45deg); z-index: 3;
+}
+#tabWardrobe .ns-hex-cell::before { left: 12px; }
+#tabWardrobe .ns-hex-cell::after { right: 12px; }
+#tabWardrobe .ns-hex-link {
+  position: absolute; top: 50px; right: -17px; width: 16px; height: 2px;
+  background: rgba(255, 255, 255, 0.75); z-index: 0;
+}
+#tabWardrobe .ns-hex-frame {
+  position: relative; z-index: 1; width: 118px; height: 102px; padding: 3px; box-sizing: border-box;
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  background: linear-gradient(160deg, #eaf7ff, #8fc6f5);
+  filter: drop-shadow(0 0 10px rgba(96, 180, 250, 0.55));
+  transition: transform 0.15s ease;
+}
+#tabWardrobe .ns-hex-frame:hover { transform: scale(1.04); }
+#tabWardrobe .ns-hex-frame.selected { padding: 6px; background: linear-gradient(160deg, #ffe37a, #ffc93c); filter: drop-shadow(0 0 14px rgba(255, 200, 40, 0.75)); }
+#tabWardrobe .ns-hex-tile {
+  position: relative; width: 100%; height: 100%; border: none; padding: 0; cursor: pointer;
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cpath d='M14 1 27 8.5v15L14 31 1 23.5v-15z' fill='none' stroke='%23ffffff' stroke-opacity='0.35'/%3E%3C/svg%3E"),
+    linear-gradient(165deg, #63c3ef, #2f83d8);
+  background-size: 28px 49px, cover;
+  display: flex; align-items: center; justify-content: center;
+}
+#tabWardrobe .ns-hex-tile.locked { background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cpath d='M14 1 27 8.5v15L14 31 1 23.5v-15z' fill='none' stroke='%23ffffff' stroke-opacity='0.22'/%3E%3C/svg%3E"),
+    linear-gradient(165deg, #7e97bd, #5d759c);
+  background-size: 28px 49px, cover;
+}
+#tabWardrobe .ns-hex-art { width: 57px; height: 57px; pointer-events: none; filter: drop-shadow(0 4px 6px rgba(20, 40, 90, 0.35)); }
+#tabWardrobe .ns-hex-num {
+  position: absolute; left: 0; right: 0; bottom: 7px; text-align: center;
+  font-weight: 900; font-size: 13px; color: #fff; pointer-events: none;
+  text-shadow: 0 1px 3px rgba(20, 45, 95, 0.65);
+}
+#tabWardrobe .ns-hex-tick { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+#tabWardrobe .ns-hex-tick svg { width: 78%; height: 78%; filter: drop-shadow(0 3px 5px rgba(150, 100, 0, 0.4)); }
+#tabWardrobe .ns-hex-lock {
+  position: absolute; top: 9px; right: 20px; font-size: 13px; pointer-events: none;
+  filter: drop-shadow(0 2px 3px rgba(20, 40, 90, 0.5));
+}
+#tabWardrobe .ns-hex-label {
+  margin-top: 7px; position: relative; z-index: 2;
+  background: rgba(255, 255, 255, 0.55); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 999px;
+  padding: 3px 13px; font-size: 12px; font-weight: 900; color: #2c3a63; white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(147, 197, 253, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#tabWardrobe .ns-hex-frame.selected + .ns-hex-label { background: rgba(255, 227, 122, 0.8); box-shadow: 0 4px 14px rgba(255, 201, 60, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.95); }
+
+/* ---------- Animations tab: bottom detail strip ---------- */
+#tabWardrobe .ns-bottom-strip {
+  display: none; position: absolute; z-index: 4;
+  /* Span the FULL sheet width, flush with its bottom. The strip's
+     containing block is .ns-sheet-panes, which begins after the menu
+     rail (1px sheet border + 88px rail + 10px sheet-main gap = 99px
+     in from the sheet's left edge) and ends 1px short of the sheet's
+     right and bottom borders — so extend the strip by exactly those
+     amounts. The sheet's overflow:hidden + 18px radius then clips the
+     strip's bottom corners to the sheet's rounded corner. The old
+     slanted clip-path is removed: squared to the sheet it no longer
+     leaves a bare wedge of sheet at the bottom-right, and no bare
+     sheet gap remains at the bottom-left either. */
+  left: calc(-88px - 10px - 1px); right: -1px; bottom: -1px;
+  min-height: 92px; box-sizing: border-box;
+  background: linear-gradient(90deg, rgba(96, 184, 240, 0.82), rgba(70, 150, 230, 0.78));
+  padding: 12px 20px; gap: 14px; align-items: flex-start;
+}
+#tabWardrobe .ns-sheet.tab-animations .ns-bottom-strip { display: flex; }
+#tabWardrobe .ns-note-pill {
+  flex: none; display: inline-flex; align-items: center; gap: 6px; margin-top: 2px;
+  background: rgba(255, 255, 255, 0.5); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 999px; padding: 4px 12px;
+  font-size: 12px; font-weight: 900; color: #24365f;
+  box-shadow: 0 4px 12px rgba(45, 140, 220, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#tabWardrobe .ns-note-diamond-sm { color: #2fbf9b; font-size: 11px; }
+#tabWardrobe .ns-strip-main { flex: 1; min-width: 0; }
+#tabWardrobe .ns-strip-line1 { display: flex; gap: 10px; align-items: baseline; }
+#tabWardrobe .ns-strip-anim-name { font-weight: 900; font-size: 16.5px; color: #173a5e; }
+#tabWardrobe .ns-strip-frames { font-size: 12px; font-weight: 800; color: #2c5f8f; }
+#tabWardrobe .ns-strip-desc { margin: 2px 0 0; font-size: 12.5px; font-weight: 700; color: #20507f; }
+#tabWardrobe .ns-strip-lock { display: flex; align-items: center; gap: 10px; margin-top: 7px; }
+#tabWardrobe .ns-strip-lock-text { font-weight: 900; font-size: 12.5px; color: #8a5a00; white-space: nowrap; }
+#tabWardrobe .ns-bar-strip { flex: 1; max-width: 260px; }
+#tabWardrobe .ns-strip-lock-xp { font-size: 12px; font-weight: 900; color: #20507f; white-space: nowrap; }
+
+/* Studio On/Off switch */
+#tabWardrobe .ns-switch { flex: none; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; margin-top: 4px; }
+#tabWardrobe .ns-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+#tabWardrobe .ns-switch-track {
+  width: 46px; height: 25px; border-radius: 999px; position: relative; flex: none;
+  background: linear-gradient(120deg, #57b6f2, #2f7fd0);
+  box-shadow: inset 0 2px 5px rgba(20, 50, 110, 0.35), 0 3px 8px rgba(47, 127, 208, 0.4);
+  transition: background 0.2s ease;
+}
+/* Knob side must match the state the JS word shows (checked = "On"):
+   ON = knob RIGHT on the blue track; OFF = knob LEFT on the grey track.
+   (These two left values were previously swapped, so the switch read
+   as off while the word said "On".) */
+#tabWardrobe .ns-switch-knob {
+  position: absolute; top: 2.5px; left: 23px; width: 20px; height: 20px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #d9e9fb);
+  box-shadow: 0 2px 5px rgba(20, 50, 110, 0.4); transition: left 0.2s ease;
+}
+#tabWardrobe .ns-switch input:not(:checked) + .ns-switch-track { background: linear-gradient(120deg, #a9bdd6, #8499b5); }
+#tabWardrobe .ns-switch input:not(:checked) + .ns-switch-track .ns-switch-knob { left: 3px; }
+#tabWardrobe .ns-switch-text { font-weight: 900; font-size: 13px; color: #173a5e; min-width: 22px; }
+
+/* ---------- What's New card (Settings) ---------- */
+.ns-whatsnew-card .ns-new-tag {
+  background: rgba(255, 255, 255, 0.55); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(147, 197, 253, 0.8); border-radius: 999px; padding: 4px 12px;
+  font-size: 11px; font-weight: 900; color: #2f7fd0;
+  box-shadow: 0 4px 12px rgba(147, 197, 253, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+.ns-whatsnew-cols { display: flex; gap: 18px; }
+.ns-whatsnew-col { flex: 1; }
+.ns-whatsnew-h { margin: 4px 0 6px; font-size: 13px; font-weight: 900; color: #2c3a63; }
+.ns-whatsnew-list { margin: 0; padding-left: 18px; font-size: 12.5px; font-weight: 700; color: #48649e; line-height: 1.5; }
+.ns-whatsnew-foot { margin: 10px 0 0; font-size: 12px; font-weight: 700; color: #7d92c2; }
+
+/* ---------- Window look: View 1 (Character Select) glass sheet ----------
+   The same big glass sheet as Window 2's .ns-sheet, as a backdrop layer
+   behind the character cards: it starts below the "Character Select"
+   heading and sub-line (they stay above the sheet, like Window 2's
+   title) and extends a little past the cards at the sides and bottom.
+   Backdrop only — no layout, width or card change. (.ns-view already
+   forms a stacking context, so the layer stays inside this view.) */
+#tabWardrobe .ns-view-select::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  top: 120px; left: -10px; right: -10px; bottom: -10px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.55), rgba(214, 205, 250, 0.45));
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 22px;
+  box-shadow: 0 10px 26px rgba(90, 110, 200, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+/* View 1's note strip becomes the sheet's blue bottom strip, echoing
+   Window 2's bottom strip (same blue gradient; its slant clip-path was
+   already the strip shape). */
+#tabWardrobe .ns-note-strip {
+  background: linear-gradient(90deg, rgba(96, 184, 240, 0.82), rgba(70, 150, 230, 0.78));
+  box-shadow: 0 6px 16px rgba(40, 130, 200, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+#tabWardrobe .ns-note-strip p { color: #173a5e; }
+#tabWardrobe .ns-note-diamond { color: #ffe37a; }
+
+/* ---------- Details & Story: separate title bars + richer cards ----------
+   The Details and Story panes now carry their OWN .ns-chevron-bar as the
+   first element inside the pane, above the hero panel — structurally the
+   same separate bar as the Animations pane's "Animation Set" bar (the
+   shared .ns-chevron-bar rules style all three; the bar shows only on
+   its own tab because tab switching hides the whole pane). The in-card
+   header rows (.ns-hero-head / .ns-hero-tags) are plain panel headers
+   again, styled by the base hero rules above. Below: the extra Details
+   sections (set completion + next unlock stats, personality traits,
+   bond hearts, info grid) and the Story sections (labels, likes list,
+   quote strip) — all in the Studio's glass/pill/bar language. */
+#tabWardrobe .ns-sec { margin-top: 14px; }
+#tabWardrobe .ns-sec-label {
+  display: block; font-size: 10.5px; font-weight: 900; letter-spacing: 1px;
+  color: #7d92c2; text-transform: uppercase; margin-bottom: 7px;
+}
+#tabWardrobe .ns-traits { display: flex; gap: 7px; flex-wrap: wrap; }
+/* Next unlock row (Details) */
+#tabWardrobe .ns-next-unlock {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 12px;
+  padding: 8px 12px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  font-size: 12.5px; font-weight: 800; color: #48649e;
+}
+#tabWardrobe .ns-next-label {
+  flex: none; font-size: 10.5px; font-weight: 900; letter-spacing: 1px;
+  color: #7d92c2; text-transform: uppercase;
+}
+#tabWardrobe .ns-next-unlock strong { color: #24365f; font-weight: 900; }
+/* Bond row (Details) */
+#tabWardrobe .ns-bond-row { display: flex; align-items: center; gap: 10px; }
+#tabWardrobe .ns-bond-row .ns-sec-label { margin-bottom: 0; }
+#tabWardrobe .ns-bond-hearts { font-size: 16px; letter-spacing: 2px; line-height: 1; color: rgba(120, 145, 200, 0.35); }
+#tabWardrobe .ns-bond-hearts .lit { color: #f06ba8; text-shadow: 0 0 8px rgba(240, 107, 168, 0.55); }
+#tabWardrobe .ns-bond-text { font-size: 12.5px; font-weight: 900; color: #2c3a63; }
+/* Info grid (Details) */
+#tabWardrobe .ns-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; }
+#tabWardrobe .ns-info-row { display: flex; flex-direction: column; }
+#tabWardrobe .ns-info-k { font-size: 10.5px; font-weight: 900; letter-spacing: 1px; color: #7d92c2; text-transform: uppercase; }
+#tabWardrobe .ns-info-v { font-weight: 900; color: #2c3a63; font-size: 13.5px; }
+/* Likes list (Story) */
+#tabWardrobe .ns-likes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px; }
+#tabWardrobe .ns-like { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 800; color: #48649e; }
+#tabWardrobe .ns-like-ico {
+  flex: none; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.55); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 50%;
+  font-size: 11px; color: #2f7fd0; box-shadow: 0 3px 8px rgba(90, 110, 200, 0.18);
+}
+/* Quote strip (Story) — a glass pill like the note pill, not a popup */
+#tabWardrobe .ns-quote {
+  margin-top: 16px; display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255, 255, 255, 0.55); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 999px; padding: 7px 16px;
+  font-size: 13px; font-weight: 900; color: #24365f;
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+/* ---------- Window 2: big title + hexagon rail INSIDE the sheet ----------
+   The sheet is now a column: the big main title sits at the top inside
+   the sheet (its own style is untouched — only its margins place it
+   inside the border), and below it .ns-sheet-main is a row holding the
+   hexagon menu rail and .ns-sheet-panes. The panes wrapper is the old
+   sheet content area — the character column, the three panes and the
+   bottom strip are all positioned relative to it, so their arrangement
+   and sizes are exactly as before, just enclosed by the sheet. The
+   header row above (Back, eyebrow + title, counters) is untouched, and
+   the X button stays in the outside .ns-title-row, which now holds
+   nothing else. */
+#tabWardrobe .ns-sheet { display: flex; flex-direction: column; }
+#tabWardrobe .ns-sheet > .ns-main-title { flex: none; align-self: flex-start; margin: 10px 0 10px 20px; }
+#tabWardrobe .ns-sheet-main { display: flex; gap: 10px; flex: 1; min-height: 0; align-items: stretch; }
+#tabWardrobe .ns-sheet-panes { position: relative; flex: 1; min-width: 0; min-height: 478px; }

@@ -1,0 +1,387 @@
+/* ==========================================================================
+   Nooki — whole-app theme layer (nooki-app-theme.css)
+   Brings the Styling Studio / Settings hexagon theme (light blue-lavender-
+   pink palette, translucent glass panels, glossy blue buttons, yellow
+   primary buttons, one clean Nunito font) to the rest of the app:
+   titlebar, sidebar, Dashboard, Quests & Water, Wi-Fi File Drop, Settings.
+
+   PAINT ONLY. Every rule in this file uses nothing but color, background,
+   border-color, border-radius, box-shadow, backdrop-filter and font
+   properties. No display/visibility, no position/layout, no transforms.
+   Everything is scoped under #desktopAppShell, so the floating pet, its
+   resize handle, the window traffic-light controls, the modals and the
+   transfer HUD (all outside the shell) are never touched. Risky or
+   JS-rendered internals (task list items, water droplets, chibi scene)
+   are deliberately left alone.
+   ========================================================================== */
+
+/* ---------- Shell backdrop & one clean font ---------- */
+#desktopAppShell {
+  background: linear-gradient(135deg, #f6c9de 0%, #d9c8f5 34%, #bcd7fb 68%, #a8cdf7 100%);
+  font-family: 'Nunito', sans-serif;
+}
+#desktopAppShell button,
+#desktopAppShell input,
+#desktopAppShell select,
+#desktopAppShell textarea { font-family: inherit; }
+#desktopAppShell .desktop-content { background: transparent; }
+
+/* ---------- Titlebar & header (traffic-light window controls excluded) ---------- */
+#desktopAppShell .desktop-titlebar {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(214, 205, 250, 0.45));
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  box-shadow: 0 4px 18px rgba(90, 110, 200, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+#desktopAppShell .titlebar-title-text { color: #24365f; font-weight: 900; }
+#desktopAppShell .titlebar-pill,
+#desktopAppShell .titlebar-pill-btn {
+  background: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border-color: rgba(255, 255, 255, 0.9); border-radius: 999px;
+  color: #2c3a63; font-weight: 900;
+  box-shadow: 0 4px 12px rgba(90, 110, 200, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#desktopAppShell .titlebar-pill-btn:hover { background: rgba(255, 255, 255, 0.75); }
+#desktopAppShell .titlebar-pill.exp-pill {
+  background: rgba(255, 227, 122, 0.75);
+  box-shadow: 0 4px 14px rgba(240, 180, 30, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#desktopAppShell .titlebar-icon-btn {
+  background: rgba(255, 255, 255, 0.55); border-color: rgba(255, 255, 255, 0.9);
+  border-radius: 999px; box-shadow: 0 4px 12px rgba(90, 110, 200, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#desktopAppShell .titlebar-icon-btn:hover { background: rgba(255, 255, 255, 0.78); }
+
+/* ---------- Sidebar & navigation ---------- */
+#desktopAppShell .desktop-sidebar {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(214, 205, 250, 0.42));
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  box-shadow: 6px 0 24px rgba(90, 110, 200, 0.16), inset -1px 0 0 rgba(255, 255, 255, 0.8);
+}
+#desktopAppShell .sidebar-profile {
+  background: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border-color: rgba(255, 255, 255, 0.9); border-radius: 18px;
+  box-shadow: 0 6px 16px rgba(90, 110, 200, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#desktopAppShell .sidebar-avatar {
+  background: radial-gradient(circle at 35% 30%, #a5e8ff, #38a8e8);
+  border-radius: 50%; box-shadow: 0 4px 10px rgba(56, 168, 232, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+#desktopAppShell .sidebar-greeting-text { color: #24365f; font-weight: 900; }
+#desktopAppShell .sidebar-profile-sub { color: #5a6c9c; font-weight: 800; }
+#desktopAppShell .sidebar-tab {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.75); border-radius: 14px;
+  color: #33477a; font-weight: 900;
+  box-shadow: 0 3px 10px rgba(90, 110, 200, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+#desktopAppShell .sidebar-tab:hover { background: linear-gradient(120deg, rgba(87, 182, 242, 0.55), rgba(47, 127, 208, 0.5)); color: #173a5e; }
+#desktopAppShell .sidebar-tab.active {
+  background: linear-gradient(120deg, #ffe37a, #ffc93c); color: #7a5b00;
+  box-shadow: 0 5px 16px rgba(240, 180, 30, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+/* ---------- Shared headings ---------- */
+#desktopAppShell .dash-title { color: #24365f; font-weight: 900; }
+#desktopAppShell .dash-eyebrow { color: #2f7fd0; font-weight: 900; letter-spacing: 1.6px; }
+#desktopAppShell .card-title { color: #2c3a63; font-weight: 900; }
+#desktopAppShell .card-subheading { color: #2c3a63; font-weight: 900; }
+#desktopAppShell .card-icon-pill {
+  background: rgba(255, 255, 255, 0.65); border-radius: 999px;
+  box-shadow: 0 3px 8px rgba(90, 110, 200, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+/* ---------- Shared glass cards (Dashboard / Tasks / Drop / Settings) ---------- */
+#tabDashboard .clay-card,
+#tabTasks .clay-card,
+#tabDrop .clay-card,
+#tabSettings .clay-card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(214, 205, 250, 0.45));
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border-color: rgba(255, 255, 255, 0.9); border-radius: 18px;
+  box-shadow: 0 10px 26px rgba(90, 110, 200, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+/* ---------- Shared buttons ----------
+   Glossy blue = Studio button gradient; yellow = primary actions. */
+#desktopAppShell .dash-pill-btn,
+#desktopAppShell .water-btn,
+#desktopAppShell .fd-add-btn,
+#desktopAppShell .copy-pill-btn,
+#desktopAppShell .settings-action-btn,
+#desktopAppShell .stepper-mini-btn {
+  background: linear-gradient(120deg, #57b6f2, #2f7fd0); color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.65); border-radius: 12px; font-weight: 900;
+  box-shadow: 0 5px 14px rgba(47, 127, 208, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+#desktopAppShell .dash-pill-btn:hover,
+#desktopAppShell .water-btn:hover,
+#desktopAppShell .fd-add-btn:hover,
+#desktopAppShell .copy-pill-btn:hover,
+#desktopAppShell .settings-action-btn:hover,
+#desktopAppShell .stepper-mini-btn:hover { background: linear-gradient(120deg, #7cc0f7, #3d8bd8); }
+
+#desktopAppShell .task-add-btn,
+#desktopAppShell .water-btn.water-btn-add,
+#desktopAppShell .fd-send-btn,
+#desktopAppShell .settings-save-name-btn,
+#desktopAppShell .dash-open-drop-btn {
+  background: linear-gradient(120deg, #ffd94d, #ffc93c); color: #7a5b00;
+  border-color: rgba(255, 255, 255, 0.8); border-radius: 12px; font-weight: 900;
+  box-shadow: 0 5px 16px rgba(240, 180, 30, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#desktopAppShell .task-add-btn:hover,
+#desktopAppShell .water-btn.water-btn-add:hover,
+#desktopAppShell .fd-send-btn:hover,
+#desktopAppShell .settings-save-name-btn:hover,
+#desktopAppShell .dash-open-drop-btn:hover { background: linear-gradient(120deg, #ffe37a, #ffd94d); }
+
+#desktopAppShell .clear-done-btn {
+  background: rgba(255, 179, 205, 0.5); color: #a12c4f;
+  border-color: rgba(255, 255, 255, 0.8); border-radius: 999px; font-weight: 900;
+  box-shadow: 0 3px 10px rgba(240, 107, 168, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+#desktopAppShell .danger-btn {
+  background: linear-gradient(120deg, #f26d6d, #d63d4e); color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.7); border-radius: 12px; font-weight: 900;
+  box-shadow: 0 5px 14px rgba(214, 61, 78, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+#desktopAppShell .see-all-link { color: #2f7fd0; font-weight: 900; }
+
+/* ---------- Shared inputs, selects, sliders, switches ---------- */
+#desktopAppShell .settings-text-field,
+#desktopAppShell .settings-select-field,
+#desktopAppShell .task-add-form input {
+  background: rgba(255, 255, 255, 0.65); color: #2c3a63;
+  border-color: rgba(255, 255, 255, 0.95); border-radius: 12px; font-weight: 800;
+  box-shadow: inset 0 2px 6px rgba(90, 110, 200, 0.18), 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+#desktopAppShell .clay-slider { accent-color: #2f7fd0; }
+#desktopAppShell .switch-slider {
+  background: rgba(120, 155, 220, 0.45);
+  box-shadow: inset 0 1px 3px rgba(20, 30, 70, 0.3), 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+#desktopAppShell .switch-control input:checked + .switch-slider {
+  background: linear-gradient(120deg, #57b6f2, #2f7fd0);
+  box-shadow: 0 3px 10px rgba(47, 127, 208, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+#desktopAppShell .switch-row-label { color: #2c3a63; font-weight: 900; }
+#desktopAppShell .switch-row-sub { color: #5a6c9c; font-weight: 700; }
+#desktopAppShell .settings-card-desc { color: #48649e; font-weight: 700; }
+#desktopAppShell .scale-preset-pill {
+  background: rgba(255, 255, 255, 0.55); color: #33477a;
+  border-color: rgba(255, 255, 255, 0.9); border-radius: 999px; font-weight: 900;
+  box-shadow: 0 3px 10px rgba(90, 110, 200, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#desktopAppShell .scale-preset-pill.active {
+  background: rgba(255, 227, 122, 0.8); color: #7a5b00;
+  box-shadow: 0 4px 14px rgba(240, 180, 30, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#desktopAppShell .theme-color-pill { box-shadow: 0 3px 8px rgba(90, 110, 200, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.7); border-radius: 999px; }
+#desktopAppShell .theme-color-pill.active { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.95), 0 0 0 4px rgba(240, 180, 30, 0.8), 0 4px 10px rgba(90, 110, 200, 0.3); }
+
+/* ---------- Dashboard ---------- */
+#tabDashboard .dash-hero-card {
+  background: linear-gradient(165deg, rgba(190, 224, 253, 0.55), rgba(140, 190, 248, 0.45) 55%, rgba(246, 201, 222, 0.5));
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border-color: rgba(255, 255, 255, 0.9); border-radius: 20px;
+  box-shadow: 0 14px 32px rgba(90, 110, 200, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#tabDashboard .hero-card-badge {
+  background: linear-gradient(120deg, #ffd94d, #ffc93c); color: #7a5b00;
+  border-radius: 999px; font-weight: 900;
+  box-shadow: 0 4px 12px rgba(240, 180, 30, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#tabDashboard .hero-card-heading { color: #24365f; font-weight: 900; }
+#tabDashboard .hero-card-sub { color: #48649e; font-weight: 700; }
+#tabDashboard .dash-stat-card {
+  background: rgba(255, 255, 255, 0.55);
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border-color: rgba(255, 255, 255, 0.9); border-radius: 18px;
+  box-shadow: 0 8px 22px rgba(90, 110, 200, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#tabDashboard .stat-icon-wrap.blue { background: radial-gradient(circle at 35% 30%, #a5e8ff, #38a8e8); border-radius: 14px; box-shadow: 0 4px 10px rgba(56, 168, 232, 0.4); }
+#tabDashboard .stat-icon-wrap.periwinkle { background: radial-gradient(circle at 35% 30%, #c9b8ff, #8572eb); border-radius: 14px; box-shadow: 0 4px 10px rgba(133, 114, 235, 0.4); }
+#tabDashboard .stat-icon-wrap.purple { background: radial-gradient(circle at 35% 30%, #ffb3cd, #f06ba8); border-radius: 14px; box-shadow: 0 4px 10px rgba(240, 107, 168, 0.4); }
+#tabDashboard .stat-val { color: #24365f; font-weight: 900; }
+#tabDashboard .stat-label { color: #5a6c9c; font-weight: 800; }
+#tabDashboard .stat-sub-badge {
+  background: rgba(255, 227, 122, 0.7); color: #7a5b00; border-radius: 999px; font-weight: 900;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#tabDashboard .exp-bar-track { background: rgba(120, 155, 220, 0.35); border-radius: 999px; box-shadow: inset 0 1px 2px rgba(20, 30, 70, 0.25); }
+#tabDashboard .exp-bar-fill { background: linear-gradient(90deg, #57b6f2, #38a8e8); border-radius: 999px; box-shadow: 0 2px 8px rgba(56, 168, 232, 0.55); }
+#tabDashboard .hero-exp-title, #tabDashboard .hero-exp-level { color: #2c3a63; font-weight: 900; }
+#tabDashboard .tasks-count-text { color: #48649e; font-weight: 900; }
+#tabDashboard .water-goal-badge {
+  background: rgba(255, 227, 122, 0.75); color: #7a5b00; border-radius: 999px; font-weight: 900;
+  box-shadow: 0 3px 10px rgba(240, 180, 30, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#tabDashboard .water-well-status { color: #33477a; font-weight: 800; }
+#tabDashboard .dash-water-subtitle { color: #5a6c9c; font-weight: 700; }
+#tabDashboard .water-mini-reset-btn {
+  background: rgba(255, 255, 255, 0.55); color: #33477a;
+  border-color: rgba(255, 255, 255, 0.9); border-radius: 999px; font-weight: 900;
+  box-shadow: 0 3px 10px rgba(90, 110, 200, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#tabDashboard .dash-drop-desc { color: #48649e; font-weight: 700; }
+
+/* ---------- Quests & Water ---------- */
+#tabTasks .prod-xp-badge {
+  background: rgba(255, 227, 122, 0.75); color: #7a5b00; border-radius: 999px; font-weight: 900;
+  box-shadow: 0 4px 14px rgba(240, 180, 30, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#tabTasks .tasks-count-text { color: #48649e; font-weight: 900; }
+#tabTasks .water-count-text { color: #2c3a63; font-weight: 900; }
+#tabTasks .dash-water-subtitle { color: #5a6c9c; font-weight: 700; }
+
+/* ---------- Wi-Fi File Drop ---------- */
+#tabDrop .fd-zone {
+  background: linear-gradient(165deg, rgba(190, 224, 253, 0.5), rgba(140, 190, 248, 0.42) 55%, rgba(110, 165, 240, 0.46));
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border-color: rgba(255, 255, 255, 0.9); border-radius: 20px;
+  box-shadow: 0 12px 28px rgba(90, 110, 200, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#tabDrop .fd-zone-title { color: #24365f; font-weight: 900; }
+#tabDrop .fd-zone-text, #tabDrop .fd-zone-note { color: #48649e; font-weight: 700; }
+#tabDrop .fd-count {
+  background: linear-gradient(120deg, #ffd94d, #ffc93c); color: #7a5b00; border-radius: 999px; font-weight: 900;
+  box-shadow: 0 3px 10px rgba(240, 180, 30, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+#tabDrop .qr-box {
+  background: rgba(255, 255, 255, 0.85); border-color: rgba(255, 255, 255, 0.95); border-radius: 14px;
+  box-shadow: inset 0 2px 6px rgba(90, 110, 200, 0.15), 0 4px 12px rgba(90, 110, 200, 0.2);
+}
+#tabDrop .url-copy-box {
+  background: rgba(255, 255, 255, 0.6); border-color: rgba(255, 255, 255, 0.9); border-radius: 12px;
+  box-shadow: inset 0 2px 6px rgba(90, 110, 200, 0.18);
+}
+#tabDrop .pair-instructions { color: #48649e; font-weight: 700; }
+#tabDrop .pin-hint { color: #33477a; font-weight: 800; }
+
+/* ---------- Window look: one big glass sheet per screen ----------
+   The Studio detail window's sheet, applied to every screen. Backdrop
+   only: the sheet is a ::before layer on each screen view, starting
+   just below the greeting-bar header (headers stay above the sheet,
+   exactly as they are) and extending a little past the content at the
+   sides and bottom, so the existing cards sit inside it with a visual
+   margin — the same way Window 2's tiles sit inside .ns-sheet. The
+   view itself gets no padding or layout change, so every content
+   width (including the Settings tab bar and panels) stays identical. */
+#tabDashboard, #tabTasks, #tabDrop, #tabSettings {
+  position: relative; isolation: isolate;
+}
+#tabDashboard::before, #tabTasks::before, #tabDrop::before, #tabSettings::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  top: 58px; left: -14px; right: -14px; bottom: -12px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.55), rgba(214, 205, 250, 0.45));
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 22px;
+  box-shadow: 0 10px 26px rgba(90, 110, 200, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+/* ---------- Chevron section-title bars (Dashboard) ----------
+   The Studio's blue chevron bar ("Animation Set") as the standard
+   section-title bar, on the Dashboard's two true section header rows:
+   Quest Board and Water Well. No skew on these rows — unlike the
+   Studio bar they hold live buttons, and skewing the row would slant
+   the controls; the glossy blue bar, ">>" logo, navy label and yellow
+   chevron run carry the look instead. Spacing below each header still
+   comes from the card's own flex gap, so nothing under it moves. */
+#tabDashboard #sectionTasks .clay-card-header,
+#tabDashboard #dashWaterWellCard .clay-card-header {
+  background: linear-gradient(90deg, rgba(64, 195, 235, 0.75), rgba(56, 168, 232, 0.55));
+  border-radius: 6px; padding: 7px 12px; margin: -4px -6px 0;
+  box-shadow: 0 6px 16px rgba(40, 130, 200, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+#tabDashboard #sectionTasks .card-header-left::before,
+#tabDashboard #dashWaterWellCard .card-header-left::before {
+  content: "≫"; color: #24365f; font-weight: 900; font-size: 17px; line-height: 1;
+}
+#tabDashboard #sectionTasks .card-title,
+#tabDashboard #dashWaterWellCard .card-title { color: #24365f; }
+#tabDashboard #sectionTasks .card-title::after,
+#tabDashboard #dashWaterWellCard .card-title::after {
+  content: "»»»»»»»»"; color: #ffd94d; font-size: 15px; font-weight: 900;
+  letter-spacing: 1px; margin-left: 10px; text-shadow: 0 2px 5px rgba(190, 140, 0, 0.4);
+}
+/* Right-hand items on the two bars, recoloured to stay readable on blue */
+#tabDashboard #sectionTasks .tasks-count-text { color: #24365f; }
+#tabDashboard #dashWaterWellCard .water-well-status { color: #24365f; }
+#tabDashboard #sectionTasks .see-all-link { color: #173a5e; }
+
+/* ---------- Dashboard Styling Studio card: summary (nooki-dash-studio.js) ----------
+   Deliberate exception to this file's paint-only rule: this one section
+   also sets display/layout, because its job is to retire the card's old
+   wardrobe carousel. Every rule is gated on the .ns-dash-studio-on class,
+   which nooki-dash-studio.js adds to that single card ONLY after its
+   summary block has been built successfully — if the script is absent or
+   fails, no class is added and the card renders exactly as before.
+   The carousel's DOM is never touched; it is only hidden. */
+#desktopAppShell #tabDashboard .clay-card.ns-dash-studio-on #dashWardrobeCarousel {
+  display: none;
+}
+#desktopAppShell #tabDashboard .ns-dash-summary {
+  display: flex; align-items: center; gap: 14px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.55), rgba(214, 205, 250, 0.45));
+  -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(90, 110, 200, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  padding: 10px 16px 12px;
+}
+#desktopAppShell #tabDashboard .ns-dash-char {
+  display: flex; flex-direction: column; align-items: center; flex: 0 0 auto;
+}
+#desktopAppShell #tabDashboard .ns-dash-rig {
+  position: relative; display: block; width: 54px; height: 84px;
+}
+#desktopAppShell #tabDashboard .ns-dash-rig img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: contain; pointer-events: none;
+}
+#desktopAppShell #tabDashboard .ns-dash-shadow {
+  width: 46px; height: 9px; margin-top: -5px; border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(35, 55, 115, 0.38), transparent 68%);
+}
+#desktopAppShell #tabDashboard .ns-dash-info {
+  flex: 1 1 auto; min-width: 0;
+  display: flex; flex-direction: column; gap: 5px;
+}
+#desktopAppShell #tabDashboard .ns-dash-namerow {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+#desktopAppShell #tabDashboard .ns-dash-name {
+  color: #24365f; font-weight: 900; font-size: 16px;
+}
+#desktopAppShell #tabDashboard .ns-dash-lv {
+  background: linear-gradient(120deg, #ffe37a, #ffc93c); color: #24365f;
+  font-weight: 900; font-size: 11px; padding: 2px 9px; border-radius: 999px;
+  box-shadow: 0 3px 8px rgba(240, 180, 30, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+#desktopAppShell #tabDashboard .ns-dash-xp {
+  color: #5a6c9c; font-weight: 800; font-size: 12.5px;
+}
+#desktopAppShell #tabDashboard .ns-dash-animrow {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+}
+#desktopAppShell #tabDashboard .ns-dash-animlabel {
+  color: #5a6c9c; font-weight: 800; font-size: 12px;
+  letter-spacing: 0.6px; text-transform: uppercase;
+}
+#desktopAppShell #tabDashboard .ns-dash-animcount {
+  color: #24365f; font-weight: 900; font-size: 12.5px;
+}
+#desktopAppShell #tabDashboard .ns-dash-bar {
+  height: 7px; border-radius: 999px; overflow: hidden;
+  background: rgba(120, 150, 220, 0.25);
+  box-shadow: inset 0 1px 2px rgba(36, 54, 95, 0.15);
+}
+#desktopAppShell #tabDashboard .ns-dash-bar-fill {
+  display: block; height: 100%; width: 0; border-radius: 999px;
+  background: linear-gradient(90deg, #57b6f2, #2f7fd0);
+}
+#desktopAppShell #tabDashboard .ns-dash-next {
+  margin: 0; color: #48649e; font-weight: 700; font-size: 12.5px;
+}
+#desktopAppShell #tabDashboard .ns-dash-next strong { color: #24365f; font-weight: 900; }

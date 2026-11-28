@@ -1,0 +1,185 @@
+/* ==========================================================================
+   Nooki Settings — merged top tabs (nooki-settings-theme.css)
+   Five tabs built by nooki-settings.js, grouping the seven
+   settings cards: Companion & Modules · Sound & Reminders ·
+   Daily Goals · Devices & Data · What's New. A merged tab's
+   panel shows its cards side by side (stacked when narrow).
+
+   TAB BAR DESIGN (from the user's planner-app reference —
+   "the top part only"): the bar is a translucent GLASS ROUNDED
+   CONTAINER; each tab is an ICON ON TOP with a small LABEL
+   UNDERNEATH; the selected tab is a FILLED ROUNDED TILE —
+   yellow gradient here (the app's active colour, as in the
+   sidebar and Studio), unselected tabs plain inside the bar.
+   One row, no wrapping, labels never truncated: a long label
+   wraps to two short lines inside its tile instead.
+
+   LAYOUT FIX: the app's nooki-single-character.css turns
+   .settings-cards-grid into a CSS MULTI-COLUMN layout
+   (display:block !important; column-width:290px). Display
+   alone was not enough — with the columns left in place, the
+   tab bar and the panels became column content and rendered
+   squeezed into ~290px columns side by side. The takeover
+   below therefore ALSO neutralises every column property
+   and makes the grid a full-width flex column, and the tab
+   mount / panels wrapper are forced to full width. Scoped
+   entirely under #tabSettings; nothing else is affected.
+   Only the inactive .ns-set-panel elements created by
+   nooki-settings.js are hidden — that IS the tab design.
+   No explicit heights are set anywhere, so nothing clips.
+   ========================================================================== */
+
+/* Once the script has built the tabs, the cards grid stops being
+   a grid AND stops being a multi-column layout: it becomes a
+   plain full-width flex column (tab bar, then panels). Every
+   property that could squeeze it is overridden with !important,
+   because the app's own stylesheets set display:grid (style.css)
+   and display:block + column-width:290px
+   (nooki-single-character.css) on this same element. */
+#desktopAppShell #tabSettings .settings-cards-grid.ns-settings-tabs-on,
+#tabSettings .settings-cards-grid.ns-settings-tabs-on {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 0 !important;
+  columns: auto !important;
+  column-width: auto !important;
+  column-count: auto !important;
+  column-gap: normal !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+}
+#tabSettings #nsSettingsTabs {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: none !important;
+  box-sizing: border-box;
+}
+
+/* ---------- Tab bar: glass container, icon over label ---------- */
+#tabSettings .ns-set-tabbar {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 4px;
+  width: 100%;
+  margin: 0 0 14px;
+  padding: 6px;
+  box-sizing: border-box;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.55), rgba(196, 222, 252, 0.38));
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 19px;
+  box-shadow: 0 8px 22px rgba(90, 110, 200, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+#tabSettings .ns-set-tab {
+  flex: 1 1 0;
+  min-width: 0;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 7px 6px 6px;
+  border: none;
+  border-radius: 13px;
+  background: transparent;
+  box-shadow: none;
+  color: rgba(36, 54, 95, 0.72);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.15;
+  cursor: pointer;
+}
+#tabSettings .ns-set-tab-label {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  text-align: center;
+  line-height: 1.15;
+}
+#tabSettings .ns-set-tab:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+#tabSettings .ns-set-tab-chip {
+  flex: none;
+  width: 22px; height: 20px;
+  display: inline-flex; align-items: center; justify-content: center;
+  clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+  background: linear-gradient(160deg, #7cc0f7, #3d8bd8);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.55);
+  font-size: 11px; line-height: 1;
+}
+#tabSettings .ns-set-tab.ns-active,
+#tabSettings .ns-set-tab.ns-active:hover {
+  background: linear-gradient(160deg, #ffe37a, #ffc93c);
+  color: #24365f;
+  box-shadow: 0 5px 14px rgba(255, 180, 40, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+#tabSettings .ns-set-tab.ns-active .ns-set-tab-chip {
+  background: linear-gradient(160deg, #ffffff, #ffe9a8);
+}
+
+/* ---------- Panels: full content width; merged panels put their
+   cards side by side in 2 columns, stacked when narrow ---------- */
+#tabSettings .ns-set-panels {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: none !important;
+  box-sizing: border-box;
+}
+#tabSettings .ns-set-panel { display: none; width: 100%; }
+#tabSettings .ns-set-panel.ns-active { display: block; }
+#tabSettings .ns-set-panel-multi.ns-active {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  #tabSettings .ns-set-panel-multi.ns-active { grid-template-columns: minmax(0, 1fr); }
+}
+#tabSettings .ns-set-panel > .settings-card {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* ---------- Tidy rows inside the active panel's cards ----------
+   Consistent padding and thin dividers between setting rows;
+   controls sit in one aligned right-hand column. */
+#tabSettings .ns-set-panel .settings-switch-row {
+  padding: 11px 2px;
+  margin: 0;
+  border-bottom: 1px solid rgba(36, 54, 95, 0.09);
+}
+#tabSettings .ns-set-panel .settings-switch-row:last-child { border-bottom: none; }
+#tabSettings .ns-set-panel .switch-control { margin-left: auto; flex: none; }
+
+#tabSettings .ns-set-panel .settings-input-group,
+#tabSettings .ns-set-panel .settings-slider-group,
+#tabSettings .ns-set-panel .settings-theme-group,
+#tabSettings .ns-set-panel .settings-backup-group,
+#tabSettings .ns-set-panel .settings-reset-group {
+  padding: 11px 2px;
+  margin: 0;
+  border-bottom: 1px solid rgba(36, 54, 95, 0.09);
+}
+#tabSettings .ns-set-panel .settings-input-group:last-child,
+#tabSettings .ns-set-panel .settings-slider-group:last-child,
+#tabSettings .ns-set-panel .settings-theme-group:last-child,
+#tabSettings .ns-set-panel .settings-backup-group:last-child,
+#tabSettings .ns-set-panel .settings-reset-group:last-child { border-bottom: none; }
+
+/* Fields share one consistent width where the markup allows it. */
+#tabSettings .ns-set-panel .settings-select-field,
+#tabSettings .ns-set-panel .settings-text-field {
+  width: 240px;
+  max-width: 100%;
+  box-sizing: border-box;
+}

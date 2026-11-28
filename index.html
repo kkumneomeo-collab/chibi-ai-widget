@@ -13,6 +13,9 @@
   <link rel="stylesheet" href="nooki-layout.css">
   <link rel="stylesheet" href="nooki-single-character.css">
   <link rel="stylesheet" href="nooki-reminders.css">
+  <link rel="stylesheet" href="nooki-studio-theme.css">
+  <link rel="stylesheet" href="nooki-settings-theme.css">
+  <link rel="stylesheet" href="nooki-app-theme.css">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#8572eb">
 </head>
@@ -361,6 +364,236 @@
              SCREEN 3: WARDROBE & STYLING STUDIO
              ========================================== -->
         <section class="app-screen-view" id="tabWardrobe">
+          <!-- ============================================================
+               NEW STYLING STUDIO (added by nooki-studio-theme.css + nooki-studio.js)
+               The original wardrobe header and split layout above stay in
+               the DOM untouched (hidden by the theme CSS) so every existing
+               script keeps working exactly as before.
+               ============================================================ -->
+          <div class="ns-studio" id="nsStudio">
+
+            <!-- ================= VIEW 1: CHARACTER SELECT ================= -->
+            <div class="ns-view ns-view-select" id="nsViewSelect">
+              <div class="ns-topbar">
+                <div class="ns-title-block">
+                  <span class="ns-title-block-main">Styling Studio</span>
+                  <span class="ns-title-block-sub">DESKTOP COMPANION</span>
+                </div>
+                <div class="ns-counters">
+                  <span class="ns-pill"><span class="ns-pill-ico ns-ico-star">★</span> Lv. <span id="nsLvVal">1</span></span>
+                  <span class="ns-pill"><span class="ns-pill-ico ns-ico-heart">♥</span> <span id="nsXpVal">0</span> XP <span class="ns-plus">+</span></span>
+                  <span class="ns-pill"><span class="ns-pill-ico ns-ico-gem">◆</span> 1 Set <span class="ns-plus">+</span></span>
+                </div>
+              </div>
+
+              <h2 class="ns-heading">Character Select</h2>
+              <p class="ns-sub">Tap a character card to open her window — her details, XP bars and animation cards are inside, with a Back button to return here.</p>
+
+              <div class="ns-cards" id="nsCards">
+                <button type="button" class="ns-card ns-card-main" id="nsCardMain">
+                  <span class="ns-card-tag ns-tag-selected">SELECTED</span>
+                  <span class="ns-card-art"><img src="assets/base-rig/muse_girl_body.png" alt="Nooki Blue" draggable="false" /><img src="assets/base-rig/muse_girl_eyerish.png" alt="" draggable="false" /><img src="assets/base-rig/muse_girl_head.png" alt="" draggable="false" /></span>
+                  <span class="ns-card-namebar"><span class="ns-card-name">Nooki Blue</span><span class="ns-name-stripes"><i></i><i></i></span></span>
+                  <span class="ns-card-strip"><span class="ns-strip-lv">◆ Lv. <span class="ns-card-lv">1</span></span><span class="ns-strip-xp"><span class="ns-card-xp">0</span> XP</span></span>
+                </button>
+                <!-- Locked future character cards are rendered by nooki-studio.js -->
+              </div>
+
+              <div class="ns-note-strip">
+                <span class="ns-note-diamond">◆</span>
+                <p>Each character arrives as a complete drawing with its own animation set. Future characters sit in the same row, locked until you reach their XP.</p>
+              </div>
+            </div>
+
+            <!-- ================= VIEW 2: CHARACTER DETAIL ================= -->
+            <div class="ns-view ns-view-detail ns-hide" id="nsViewDetail">
+              <div class="ns-topbar">
+                <button type="button" class="ns-back-btn" id="nsBackBtn">← Characters</button>
+                <div class="ns-title-block ns-title-block-mid">
+                  <span class="ns-title-block-main">Character Details</span>
+                  <span class="ns-title-block-sub">DETAILS · XP · ANIMATIONS</span>
+                </div>
+                <div class="ns-counters">
+                  <span class="ns-pill"><span class="ns-pill-ico ns-ico-star">★</span> Lv. <span id="nsLvVal2">1</span></span>
+                  <span class="ns-pill"><span class="ns-pill-ico ns-ico-heart">♥</span> <span id="nsXpVal2">0</span> XP <span class="ns-plus">+</span></span>
+                  <span class="ns-pill"><span class="ns-pill-ico ns-ico-gem">◆</span> 1 Set <span class="ns-plus">+</span></span>
+                </div>
+              </div>
+
+              <div class="ns-title-row">
+                <button type="button" class="ns-x-btn" id="nsCloseBtn" title="Back to characters">✕</button>
+              </div>
+
+              <div class="ns-detail-body">
+                <div class="ns-sheet tab-animations" id="nsSheet">
+                  <div class="ns-bg-fx" aria-hidden="true"><i class="ns-spark s1">✦</i><i class="ns-spark s2">✦</i><i class="ns-spark s3">✧</i><i class="ns-spark s4">✦</i></div>
+
+                  <h2 class="ns-main-title"><span class="ns-mt-name">Nooki Blue</span> <span class="ns-mt-num" id="nsTitleNum">6</span> <span class="ns-mt-word" id="nsTitleWord">Animations</span><span class="ns-mt-bars"><i></i><i></i></span></h2>
+
+                  <div class="ns-sheet-main">
+                    <nav class="ns-menu" id="nsMenu">
+                      <button type="button" class="ns-menu-btn" data-nstab="details">
+                        <span class="ns-menu-hex"><span class="ns-menu-ico">👤</span></span>
+                        <span class="ns-menu-label">Details</span>
+                      </button>
+                      <button type="button" class="ns-menu-btn active" data-nstab="animations">
+                        <span class="ns-menu-hex"><span class="ns-menu-ico">★</span></span>
+                        <span class="ns-menu-label">Animations</span>
+                      </button>
+                      <button type="button" class="ns-menu-btn" data-nstab="story">
+                        <span class="ns-menu-hex"><span class="ns-menu-ico">💬</span></span>
+                        <span class="ns-menu-label">Story</span>
+                      </button>
+                    </nav>
+
+                    <div class="ns-sheet-panes">
+                  <div class="ns-char-col" aria-hidden="true">
+                    <span class="ns-char-rig" aria-hidden="true"><img src="assets/base-rig/muse_girl_body.png" alt="" draggable="false" /><img src="assets/base-rig/muse_girl_eyerish.png" alt="" draggable="false" /><img src="assets/base-rig/muse_girl_head.png" alt="" draggable="false" /></span>
+                    <div class="ns-char-shadow"></div>
+                    <div class="ns-char-under">
+                      <div class="ns-under-stars" id="nsUnderStars"></div>
+                      <div class="ns-under-slots">
+                        <span class="ns-slot">Lv. <span class="ns-slot-lv">1</span></span>
+                        <span class="ns-slot">6 Animations</span>
+                        <span class="ns-slot">Original</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- DETAILS PANE -->
+                  <div class="ns-pane ns-pane-details ns-hide" id="nsPaneDetails">
+                    <div class="ns-chevron-bar">
+                      <span class="ns-chev-logo">≫</span>
+                      <span class="ns-chev-label">Character Details</span>
+                      <span class="ns-chev-row" aria-hidden="true">»»»»»»»»»»»»»»»»</span>
+                      <span class="ns-chev-q">?</span>
+                    </div>
+                    <div class="ns-hero-panel">
+                      <div class="ns-hero-head">
+                        <h3 class="ns-hero-name">Nooki Blue</h3>
+                        <span class="ns-hero-lv">Lv. <span class="ns-hero-lv-val">1</span></span>
+                      </div>
+                      <div class="ns-hero-tags">
+                        <span class="ns-glass-tag">Original Set</span>
+                        <span class="ns-glass-tag">Complete character set</span>
+                      </div>
+                      <div class="ns-hero-facts">
+                        <div class="ns-fact"><span class="ns-fact-k">Animations</span><span class="ns-fact-v">6 animations</span></div>
+                        <div class="ns-fact"><span class="ns-fact-k">Status</span><span class="ns-fact-v">Selected · Active companion</span></div>
+                      </div>
+                      <div class="ns-stat">
+                        <div class="ns-stat-head"><span>XP progress</span><span id="nsStatXpText">0 / 100 XP to next level</span></div>
+                        <div class="ns-bar"><div class="ns-bar-fill" id="nsStatXpFill" style="width:0%"></div></div>
+                      </div>
+                      <div class="ns-stat">
+                        <div class="ns-stat-head"><span>Animations unlocked</span><span id="nsStatAnimText">0 / 6</span></div>
+                        <div class="ns-bar"><div class="ns-bar-fill" id="nsStatAnimFill" style="width:0%"></div></div>
+                      </div>
+                      <div class="ns-stat">
+                        <div class="ns-stat-head"><span>Set completion</span><span id="nsStatSetText">0% complete</span></div>
+                        <div class="ns-bar"><div class="ns-bar-fill" id="nsStatSetFill" style="width:0%"></div></div>
+                      </div>
+                      <div class="ns-next-unlock"><span class="ns-next-label">Next unlock</span><span id="nsNextUnlockText">—</span></div>
+                      <p class="ns-hero-desc">The original Nooki. Every animation in her set was drawn for her alone — nothing is shared or swapped.</p>
+                      <div class="ns-hero-stars-row"><span class="ns-hero-stars-label">Unlocked animations</span><span class="ns-hero-stars" id="nsHeroStars"></span></div>
+                      <div class="ns-sec">
+                        <span class="ns-sec-label">Personality</span>
+                        <div class="ns-traits">
+                          <span class="ns-glass-tag ns-trait-chip">Cheerful</span>
+                          <span class="ns-glass-tag ns-trait-chip">Gentle</span>
+                          <span class="ns-glass-tag ns-trait-chip">Curious</span>
+                          <span class="ns-glass-tag ns-trait-chip">Sleepy-head</span>
+                        </div>
+                      </div>
+                      <div class="ns-sec ns-bond-row">
+                        <span class="ns-sec-label">Bond</span>
+                        <span class="ns-bond-hearts" id="nsBondHearts"></span>
+                        <span class="ns-bond-text" id="nsBondText">Bond Lv. 1</span>
+                      </div>
+                      <div class="ns-sec">
+                        <span class="ns-sec-label">About her</span>
+                        <div class="ns-info-grid">
+                          <div class="ns-info-row"><span class="ns-info-k">Type</span><span class="ns-info-v">Companion</span></div>
+                          <div class="ns-info-row"><span class="ns-info-k">Element / Theme</span><span class="ns-info-v">Sky · Clouds</span></div>
+                          <div class="ns-info-row"><span class="ns-info-k">Favourite colour</span><span class="ns-info-v">Sky blue</span></div>
+                          <div class="ns-info-row"><span class="ns-info-k">Favourite thing</span><span class="ns-info-v">Naps on clouds</span></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- ANIMATIONS PANE -->
+                  <div class="ns-pane ns-pane-animations" id="nsPaneAnimations">
+                    <div class="ns-chevron-bar">
+                      <span class="ns-chev-logo">≫</span>
+                      <span class="ns-chev-label">Animation Set</span>
+                      <span class="ns-chev-row" aria-hidden="true">»»»»»»»»»»»»»»»»</span>
+                      <span class="ns-chev-q">?</span>
+                    </div>
+                    <div class="ns-hex-grid" id="nsHexGrid"><!-- Hexagon tiles are rendered by nooki-studio.js --></div>
+                  </div>
+
+                  <!-- STORY PANE -->
+                  <div class="ns-pane ns-pane-story ns-hide" id="nsPaneStory">
+                    <div class="ns-chevron-bar">
+                      <span class="ns-chev-logo">≫</span>
+                      <span class="ns-chev-label">Story · About</span>
+                      <span class="ns-chev-row" aria-hidden="true">»»»»»»»»»»»»»»»»</span>
+                      <span class="ns-chev-q">?</span>
+                    </div>
+                    <div class="ns-hero-panel">
+                      <div class="ns-hero-tags"><span class="ns-glass-tag">Story · About</span></div>
+                      <span class="ns-sec-label">About</span>
+                      <p class="ns-story-text">Nooki Blue — the first character. A small blue-haired companion who lives on your desktop, follows your mouse with her eyes, and keeps you company while you work. Her whole animation set was drawn just for her.</p>
+                      <p class="ns-story-text">More characters are on their way. Each one will arrive as a complete drawing with an animation set of her own — unlock them with XP from quests and water.</p>
+                      <div class="ns-sec">
+                        <span class="ns-sec-label">Personality</span>
+                        <div class="ns-traits">
+                          <span class="ns-glass-tag ns-trait-chip">Cheerful</span>
+                          <span class="ns-glass-tag ns-trait-chip">Gentle</span>
+                          <span class="ns-glass-tag ns-trait-chip">Curious</span>
+                          <span class="ns-glass-tag ns-trait-chip">Sleepy-head</span>
+                        </div>
+                        <p class="ns-story-text">Always happy to see you, curious about everything you open — and the first to drift off when the screen goes quiet.</p>
+                      </div>
+                      <div class="ns-sec">
+                        <span class="ns-sec-label">Likes</span>
+                        <ul class="ns-likes">
+                          <li class="ns-like"><span class="ns-like-ico">☁</span> Cloud naps</li>
+                          <li class="ns-like"><span class="ns-like-ico">☕</span> Warm cocoa</li>
+                          <li class="ns-like"><span class="ns-like-ico">★</span> Stargazing</li>
+                          <li class="ns-like"><span class="ns-like-ico">♪</span> Music while you type</li>
+                        </ul>
+                      </div>
+                      <div class="ns-quote"><span class="ns-note-diamond-sm">◆</span><span class="ns-quote-text">&ldquo;I'll keep you company while you work!&rdquo;</span></div>
+                    </div>
+                  </div>
+
+                  <!-- BOTTOM DETAIL STRIP (Animations tab only, shown by CSS) -->
+                  <div class="ns-bottom-strip" id="nsBottomStrip">
+                    <span class="ns-note-pill"><span class="ns-note-diamond-sm">◆</span> Note</span>
+                    <div class="ns-strip-main">
+                      <div class="ns-strip-line1"><span class="ns-strip-anim-name" id="nsStripName">Idle</span> <span class="ns-strip-frames" id="nsStripFrames">Loop · 12 frames</span></div>
+                      <p class="ns-strip-desc" id="nsStripDesc">Blink, head sway and gentle breathing while she sits on your desktop.</p>
+                      <div class="ns-strip-lock ns-hide" id="nsStripLock">
+                        <span class="ns-strip-lock-text" id="nsStripLockText">🔒 Locked · Unlocks at 100 XP</span>
+                        <span class="ns-bar ns-bar-strip"><span class="ns-bar-fill" id="nsStripLockFill" style="width:0%"></span></span>
+                        <span class="ns-strip-lock-xp" id="nsStripLockXp">0 / 100 XP</span>
+                      </div>
+                    </div>
+                    <label class="ns-switch ns-hide" id="nsStripSwitchWrap" title="Turn this animation on or off in the Studio">
+                      <input type="checkbox" id="nsStripSwitch" checked />
+                      <span class="ns-switch-track"><span class="ns-switch-knob"></span></span>
+                      <span class="ns-switch-text" id="nsStripSwitchText">On</span>
+                    </label>
+                  </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
           <div class="dash-greeting-bar">
             <div>
               <span class="dash-eyebrow">Styling Studio</span>
@@ -557,6 +790,7 @@
 
           <!-- Responsive 6-Card Soft Grid -->
           <div class="settings-cards-grid">
+            <div id="nsSettingsTabs"></div>
             
             <!-- 1. Companion Card -->
             <div class="clay-card settings-card">
@@ -836,6 +1070,38 @@
               </div>
             </div>
 
+
+            <!-- 7. What's New Card (added with the new Styling Studio) -->
+            <div class="clay-card settings-card ns-whatsnew-card">
+              <div class="clay-card-header">
+                <div class="card-header-left">
+                  <span class="card-icon-pill">✨</span>
+                  <h3 class="card-title">What's New in the Styling Studio</h3>
+                </div>
+                <span class="ns-new-tag">New · Added to Settings</span>
+              </div>
+              <div class="ns-whatsnew-cols">
+                <div class="ns-whatsnew-col">
+                  <h4 class="ns-whatsnew-h">Removed from the old Studio</h4>
+                  <ul class="ns-whatsnew-list">
+                    <li>Boy/Girl switch</li>
+                    <li>Hair colour &amp; hairstyle editing</li>
+                    <li>Outfits / Headwear / Accessories tabs</li>
+                    <li>Saved Looks, Save Look, Random and Reset</li>
+                  </ul>
+                </div>
+                <div class="ns-whatsnew-col">
+                  <h4 class="ns-whatsnew-h">What it does instead</h4>
+                  <ul class="ns-whatsnew-list">
+                    <li>Choose a character — each one is a complete drawing</li>
+                    <li>Animations travel with the character</li>
+                    <li>Preview animations before you commit</li>
+                    <li>Room to grow — new characters unlock with XP</li>
+                  </ul>
+                </div>
+              </div>
+              <p class="ns-whatsnew-foot">The Dashboard's Styling Studio card still opens this Studio.</p>
+            </div>
           </div>
         </section>
 
@@ -959,5 +1225,8 @@
   <script src="nooki-pet-touch.js"></script>
   <script src="nooki-reminders.js"></script>
   <script src="nooki-drop.js"></script>
+  <script src="nooki-studio.js"></script>
+  <script src="nooki-settings.js"></script>
+  <script src="nooki-dash-studio.js"></script>
 </body>
 </html>
