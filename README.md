@@ -89,4 +89,4 @@ A separate mobile version of Nooki exists for Android, built from a sibling proj
 
 MIT — see `package.json`.
 
-Made by **S.D. Sachie Karunathilaka** ([yumeokoete](https://github.com/yumeokoete-dev)).
+Made by **Sachie** ([yumeokoete](https://github.com/yumeokoete-dev)).
